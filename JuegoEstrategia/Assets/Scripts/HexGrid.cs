@@ -150,7 +150,7 @@ public class HexGrid : MonoBehaviour
         float maxX = pasoX * (ancho - 1) + tamanoHexagono;
         float maxY = pasoY * (alto - 1 + ((ancho - 1) % 2) * 0.5f)+ tamanoHexagono;
 
-        / Resta la mitad del tamaño para centrar el mapa en el objeto HexGrid
+        // Resta la mitad del tamaño para centrar el mapa en el objeto HexGrid
         posicionX -= maxX / 2f;
         posicionY -= maxY / 2f;
 

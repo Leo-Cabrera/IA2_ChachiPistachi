@@ -369,10 +369,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334c219d610ec8c47820ddca713f00bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HexGrid
-  ancho: 2
-  alto: 2
+  ancho: 28
+  alto: 15
   tamanoHexagono: 1
-  prefabHexagono: {fileID: 6840483830569989800, guid: 68215850c32174d459faf03dea32671d, type: 3}
+  prefabHexagono: {fileID: 834078397821229424, guid: 483eab9c79136a94d8cfb018322323a5, type: 3}
+  spritePlanta: {fileID: 21300000, guid: 8b242143ad5274147b37de9be774e9f9, type: 3}
+  spriteFuego: {fileID: 21300000, guid: 3b49d657d1f1b314d8f152ed3ab1f9f4, type: 3}
+  spriteTierra: {fileID: 21300000, guid: a8053e3d1cb2089439930aa110595f61, type: 3}
+  spriteAgua: {fileID: 21300000, guid: 7d96f12b6c3a3784ca6ad160a3ae1e35, type: 3}
 --- !u!4 &1393154647
 Transform:
   m_ObjectHideFlags: 0
@@ -382,7 +386,7 @@ Transform:
   m_GameObject: {fileID: 1393154645}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

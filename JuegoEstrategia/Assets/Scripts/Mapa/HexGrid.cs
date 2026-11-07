@@ -20,6 +20,8 @@ public class HexGrid : MonoBehaviour
     // Guarda las casillas creadas, accesibles por sus coordenadas
     private HexTile[,] casillas;
 
+    public bool mapaCreado = false;
+
      // Sprite que se asignara a cada tipo de terreno
     [Header("Sprites de terreno")]
     public Sprite spritePlanta;
@@ -102,6 +104,8 @@ public class HexGrid : MonoBehaviour
 
             }
         }
+
+        mapaCreado = true;
     }
 
     // Devuelve un tipo de terreno aleatorio segun las probabilidades indicadas
@@ -169,6 +173,23 @@ public class HexGrid : MonoBehaviour
             case TipoTerreno.Agua:   return spriteAgua;
             default: return null;
         }
+    }
+
+    public HexTile ObtenerCasilla(int x, int y)
+    {
+        // Comprueba que las coordenadas estén dentro del mapa
+        if (x < 0 || x >= ancho || y < 0 || y >= alto)
+        {
+            return null;
+        }
+
+        // Devuelve la casilla que se encuentra en esas coordenadas
+        return casillas[x, y];
+    }
+
+    public HexTile[,] ObtenerTodasLasCasillas()
+    {
+        return casillas;
     }
 
 

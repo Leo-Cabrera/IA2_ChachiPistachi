@@ -6,7 +6,7 @@ public class Temporizador : MonoBehaviour
 {
     public float maxTemporizador = 5f;
     private float temporizador;
-    [SerializeField] public bool temporizadorActivo;
+    [HideInInspector] public bool temporizadorActivo;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

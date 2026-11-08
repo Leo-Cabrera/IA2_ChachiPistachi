@@ -94,7 +94,7 @@ public class MovimientoHex : MonoBehaviour
                 float nuevoCoste = costes[actual] + vecina.costeMovimiento;
 
                 // No permite superar los puntos de movimiento disponibles
-                if (nuevoCoste > unidad.puntosMovimiento)
+                if (nuevoCoste > unidad.puntosMovimientoRestantes)
                 {
                     continue;
                 }

@@ -15,5 +15,7 @@ public class UnidadHex : MonoBehaviour
 
     [Header("Movimiento")]
     //Cantidad de movimiento disponible para la unidad durante su turno
-    public int puntosMovimiento = 3;
+    public int puntosMovimientoRestantes = 3;
+
+    public int puntosMovimientoMaximos = 3;
 }

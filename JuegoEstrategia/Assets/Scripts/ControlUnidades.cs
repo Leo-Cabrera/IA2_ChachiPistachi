@@ -26,6 +26,7 @@ public class ControlUnidades : MonoBehaviour
     private bool movimientoEnCurso = false;
 
     private bool unidadSeleccionada = false;
+    private bool unidadesReiniciadas = false;
 
     [Header("Interfaz")]
     public TMPro.TextMeshProUGUI textoPuntosMovimiento;
@@ -45,44 +46,57 @@ public class ControlUnidades : MonoBehaviour
     {
 
         if (movimientoEnCurso) return;
-        if (!esTurnoJugador) return;
-
+        if (!GameManager.instance.TurnoJugador())
+        {
+            //codigo para el turno del enemigo
+            if (!unidadesReiniciadas) ReiniciarUnidades();
+        }
 
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+
+        else
         {
-            Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-            RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
-
-            if (impacto.collider != null)
+            ActualizarTextoPuntos();
+            //codigo para el turno del jugador
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
-                // Comprobar si hemos pulsado una unidad
-                UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
+                Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
-                if (unidad != null && unidad.esJugador)
+                RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
+
+                if (impacto.collider != null)
                 {
-                    unidadSeleccionada = true;
-                    MostrarCasillasMovimiento(unidad);
-                    return;
-                }
+                    // Comprobar si hemos pulsado una unidad
+                    UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
 
-                // Comprobar si hemos pulsado una casilla
-                HexTile casilla = impacto.collider.GetComponent<HexTile>();
-
-                if (casilla != null && unidadSeleccionada)
-                {
-                    if (casillasAlcanzables.ContainsKey(casilla))
+                    if (unidad != null && unidad.esJugador)
                     {
-                        movimientoEnCurso = true;
-                        unidadActual.puntosMovimiento -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
-                        StartCoroutine(MoverUnidad(unidadActual, casilla));
+                        unidadSeleccionada = true;
+                        MostrarCasillasMovimiento(unidad);
+                        return;
+                    }
 
-                        unidadSeleccionada = false;
-                        LimpiarPuntosMovimiento();
+                    // Comprobar si hemos pulsado una casilla
+                    HexTile casilla = impacto.collider.GetComponent<HexTile>();
+
+                    if (casilla != null && unidadSeleccionada)
+                    {
+                        if (casillasAlcanzables.ContainsKey(casilla))
+                        {
+                            movimientoEnCurso = true;
+                            unidadActual.puntosMovimientoRestantes -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
+                            unidadesReiniciadas = false;
+                            StartCoroutine(MoverUnidad(unidadActual, casilla));
+
+                            unidadSeleccionada = false;
+                            LimpiarPuntosMovimiento();
+                        }
                     }
                 }
             }
         }
+
+        
     }
 
     IEnumerator EsperarMapa()
@@ -217,7 +231,7 @@ public class ControlUnidades : MonoBehaviour
     {
         if (unidadActual != null)
         {
-            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimiento;
+            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimientoRestantes;
         }
     }
 
@@ -344,6 +358,12 @@ public class ControlUnidades : MonoBehaviour
         GameManager.instance.CambiarTurno();
     }
 
+
+    private void ReiniciarUnidades()
+    {
+        tropaJugador.puntosMovimientoRestantes = tropaJugador.puntosMovimientoMaximos;
+        unidadesReiniciadas = true;
+    }
 
 
 }

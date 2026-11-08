@@ -26,7 +26,8 @@ public class ControlUnidades : MonoBehaviour
     private bool movimientoEnCurso = false;
 
     private bool unidadSeleccionada = false;
-    private bool unidadesReiniciadas = false;
+    private bool unidadesAliadasReiniciadas = false;
+    private bool unidadesEnemigasReiniciadas = false;
 
     [Header("Interfaz")]
     public TMPro.TextMeshProUGUI textoPuntosMovimiento;
@@ -47,7 +48,11 @@ public class ControlUnidades : MonoBehaviour
         if (!GameManager.instance.TurnoJugador())
         {
 
-            if (!unidadesReiniciadas) ReiniciarUnidades();
+            if (!unidadesAliadasReiniciadas) ReiniciarUnidadesAliadas();
+        }
+        else
+        {
+            if(!unidadesEnemigasReiniciadas) ReiniciarUnidadesEnemigas();
         }
         if (movimientoEnCurso) return;
         
@@ -87,7 +92,7 @@ public class ControlUnidades : MonoBehaviour
                         {
                             movimientoEnCurso = true;
                             unidadActual.puntosMovimientoRestantes -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
-                            unidadesReiniciadas = false;
+                            unidadesAliadasReiniciadas = false;
                             StartCoroutine(MoverUnidad(unidadActual, casilla));
 
                             unidadSeleccionada = false;
@@ -328,17 +333,19 @@ public class ControlUnidades : MonoBehaviour
 
     IEnumerator TurnoEnemigo()
     {
+
         turnoEnemigoEnCurso = true;
 
         List<HexTile> ruta = ElegirRutaHaciaJugador(tropaEnemiga, tropaJugador);
         ruta = RecortarPorPuntos(ruta, tropaEnemiga);
-
+        Debug.Log("Count" + ruta.Count.ToString());
         if (ruta.Count <= 1)
         {
             Debug.Log("El enemigo no puede acercarse.");
         }
         else
         {
+            unidadesEnemigasReiniciadas = false;
             float costeTotal = CalcularCosteRuta(ruta);
 
             for (int i = 1; i < ruta.Count; i++)
@@ -361,12 +368,17 @@ public class ControlUnidades : MonoBehaviour
     }
 
 
-    private void ReiniciarUnidades()
+    private void ReiniciarUnidadesAliadas()
     {
         tropaJugador.puntosMovimientoRestantes = tropaJugador.puntosMovimientoMaximos;
-        unidadesReiniciadas = true;
+        unidadesAliadasReiniciadas = true;
         ActualizarTextoPuntos();
         
+    }
+    private void ReiniciarUnidadesEnemigas()
+    {
+        tropaEnemiga.puntosMovimientoRestantes = tropaEnemiga.puntosMovimientoMaximos;
+        unidadesEnemigasReiniciadas = true;
     }
 
 

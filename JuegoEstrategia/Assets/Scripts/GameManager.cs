@@ -7,52 +7,59 @@ public class GameManager : MonoBehaviour
     private bool turnoJugador = true;
     public GameObject btnSigTurno;
     public GameObject textoPensando;
+    public GameObject textoMovRestantes;
     public Temporizador temporizador;
-    
+    [HideInInspector] public bool empezarAccionEnemiga = false;
+
 
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            if (ControlUnidades.instance == null)
-            {
-                Debug.LogError("No hay ControlUnidades en la escena.");
-            }
-
         }
         else
         {
             Destroy(gameObject);
         }
     }
-    void Start()
+
+    private void Start()
     {
-        
+        ActualizarInterfaz();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
-        if (turnoJugador)
+        if (empezarAccionEnemiga)
         {
-            btnSigTurno.SetActive(true);
-            textoPensando.SetActive(false);
-        }
-        else
-        {
-            btnSigTurno.SetActive(false);
-            textoPensando.SetActive(true);
+            empezarAccionEnemiga = false;
+
+            ControlUnidades.instance.IniciarTurnoEnemigo();
         }
     }
+
     public void CambiarTurno()
     {
         turnoJugador = !turnoJugador;
+
+        ActualizarInterfaz();
+
         if (!turnoJugador)
         {
             temporizador.IniciarTemporizador();
-            ControlUnidades.instance.IniciarTurnoEnemigo();
         }
+    }
+
+    private void ActualizarInterfaz()
+    {
+        btnSigTurno.SetActive(turnoJugador);
+        textoPensando.SetActive(!turnoJugador);
+        textoMovRestantes.SetActive(turnoJugador);
+    }
+
+    public bool TurnoJugador()
+    {
+        return turnoJugador;
     }
 }

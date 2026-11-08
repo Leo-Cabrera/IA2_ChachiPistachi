@@ -6,13 +6,15 @@ public class Temporizador : MonoBehaviour
 {
     public float maxTemporizador = 5f;
     private float temporizador;
+    private float tiempoEspera;
     [HideInInspector] public bool temporizadorActivo;
+    private bool pensando;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        temporizador = maxTemporizador;
         temporizadorActivo = false;
+        pensando = false;
     }
 
     // Update is called once per frame
@@ -22,6 +24,19 @@ public class Temporizador : MonoBehaviour
         if (temporizadorActivo)
         {
             temporizador -= Time.deltaTime;
+            
+            if(pensando)
+            {
+                tiempoEspera -= Time.deltaTime;
+                if(tiempoEspera <= 0)
+                {
+                    tiempoEspera = 0;
+                    pensando = false;
+                    GameManager.instance.empezarAccionEnemiga = true;
+                    Debug.Log("Se ha activado la accion enemiga");
+                }
+            }
+            
             if (temporizador <= 0)
             {
                 ReiniciarTemporizador();
@@ -33,12 +48,15 @@ public class Temporizador : MonoBehaviour
     }
     private void ReiniciarTemporizador()
     {
-        temporizador = maxTemporizador;
         temporizadorActivo = false;
-        GameManager.instance.CambiarTurno();
+        pensando = false;
+        
     }
     public void IniciarTemporizador()
     {
+        temporizador = maxTemporizador;
+        tiempoEspera = maxTemporizador / 2;
         temporizadorActivo = true;
+        pensando = true;
     }
 }

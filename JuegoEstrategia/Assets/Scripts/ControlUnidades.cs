@@ -26,6 +26,7 @@ public class ControlUnidades : MonoBehaviour
     private bool movimientoEnCurso = false;
 
     private bool unidadSeleccionada = false;
+    private bool unidadesReiniciadas = false;
 
     [Header("Interfaz")]
     public TMPro.TextMeshProUGUI textoPuntosMovimiento;
@@ -43,46 +44,61 @@ public class ControlUnidades : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.instance.TurnoJugador())
+        {
 
+            if (!unidadesReiniciadas) ReiniciarUnidades();
+        }
         if (movimientoEnCurso) return;
+        
+        if (!esTurnoJugador) {
+            
+            return;
+        }
 
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-
-        else
         {
-            Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-            RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
-
-            if (impacto.collider != null)
+            ActualizarTextoPuntos();
+            //codigo para el turno del jugador
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
-                // Comprobar si hemos pulsado una unidad
-                UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
+                Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
-                if (unidad != null && unidad.esJugador)
+                RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
+
+                if (impacto.collider != null)
                 {
-                    unidadSeleccionada = true;
-                    MostrarCasillasMovimiento(unidad);
-                    return;
-                }
+                    // Comprobar si hemos pulsado una unidad
+                    UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
 
-                // Comprobar si hemos pulsado una casilla
-                HexTile casilla = impacto.collider.GetComponent<HexTile>();
-
-                if (casilla != null && unidadSeleccionada)
-                {
-                    if (casillasAlcanzables.ContainsKey(casilla))
+                    if (unidad != null && unidad.esJugador)
                     {
-                        movimientoEnCurso = true;
-                        unidadActual.puntosMovimiento -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
-                        StartCoroutine(MoverUnidad(unidadActual, casilla));
+                        unidadSeleccionada = true;
+                        MostrarCasillasMovimiento(unidad);
+                        return;
+                    }
 
-                        unidadSeleccionada = false;
-                        LimpiarPuntosMovimiento();
+                    // Comprobar si hemos pulsado una casilla
+                    HexTile casilla = impacto.collider.GetComponent<HexTile>();
+
+                    if (casilla != null && unidadSeleccionada)
+                    {
+                        if (casillasAlcanzables.ContainsKey(casilla))
+                        {
+                            movimientoEnCurso = true;
+                            unidadActual.puntosMovimientoRestantes -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
+                            unidadesReiniciadas = false;
+                            StartCoroutine(MoverUnidad(unidadActual, casilla));
+
+                            unidadSeleccionada = false;
+                            LimpiarPuntosMovimiento();
+                        }
                     }
                 }
             }
         }
+
+        
     }
 
     IEnumerator EsperarMapa()
@@ -128,16 +144,16 @@ public class ControlUnidades : MonoBehaviour
 
         List<HexTile> ruta = ElegirRutaHaciaJugador(tropaEnemiga, tropaJugador);
 
-        Debug.Log("Ruta hacia vecina del jugador: " + ruta.Count + " casillas");
+        ////////////////////////////////////////////////////////////////Debug.Log("Ruta hacia vecina del jugador: " + ruta.Count + " casillas");
 
         List<HexTile> recortada = RecortarPorPuntos(ruta, tropaEnemiga);
 
-        Debug.Log("Ruta recortada: " + recortada.Count + " casillas");
-        Debug.Log("Coste gastado: " + CalcularCosteRuta(recortada));
+        ///////////////////////////////////////////////////////////////////////Debug.Log("Ruta recortada: " + recortada.Count + " casillas");
+        //Debug.Log("Coste gastado: " + CalcularCosteRuta(recortada));
 
         foreach (HexTile casilla in ruta)
         {
-            Debug.Log("(" + casilla.coordenadaX + ", " + casilla.coordenadaY + ")");
+            ///////////////////////////////////////////////////Debug.Log("(" + casilla.coordenadaX + ", " + casilla.coordenadaY + ")");
         }
     }
 
@@ -217,7 +233,7 @@ public class ControlUnidades : MonoBehaviour
     {
         if (unidadActual != null)
         {
-            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimiento;
+            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimientoRestantes;
         }
     }
 
@@ -288,7 +304,7 @@ public class ControlUnidades : MonoBehaviour
             acumulado += ruta[i].costeMovimiento;
 
             // Si este paso se pasa del presupuesto, se corta ANTES de añadirlo
-            if (acumulado > unidad.puntosMovimiento) break;
+            if (acumulado > unidad.puntosMovimientoRestantes) break;
 
             recortada.Add(ruta[i]);
         }
@@ -331,7 +347,7 @@ public class ControlUnidades : MonoBehaviour
                 yield return StartCoroutine(MoverUnidad(tropaEnemiga, ruta[i]));
             }
 
-            tropaEnemiga.puntosMovimiento -= Mathf.CeilToInt(costeTotal);
+            tropaEnemiga.puntosMovimientoRestantes -= Mathf.CeilToInt(costeTotal);
         }
 
         turnoEnemigoEnCurso = false;
@@ -349,6 +365,8 @@ public class ControlUnidades : MonoBehaviour
     {
         tropaJugador.puntosMovimientoRestantes = tropaJugador.puntosMovimientoMaximos;
         unidadesReiniciadas = true;
+        ActualizarTextoPuntos();
+        
     }
 
 

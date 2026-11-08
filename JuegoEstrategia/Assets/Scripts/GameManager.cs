@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            if (ControlUnidades.instance == null)
+            {
+                Debug.LogError("No hay ControlUnidades en la escena.");
+            }
+
         }
         else
         {
@@ -47,6 +52,7 @@ public class GameManager : MonoBehaviour
         if (!turnoJugador)
         {
             temporizador.IniciarTemporizador();
+            ControlUnidades.instance.IniciarTurnoEnemigo();
         }
     }
 }

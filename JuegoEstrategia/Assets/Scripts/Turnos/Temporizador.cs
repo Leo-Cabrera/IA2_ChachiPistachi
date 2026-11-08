@@ -33,7 +33,7 @@ public class Temporizador : MonoBehaviour
                     tiempoEspera = 0;
                     pensando = false;
                     GameManager.instance.empezarAccionEnemiga = true;
-                    Debug.Log("Se ha activado la accion enemiga");
+                    
                 }
             }
             

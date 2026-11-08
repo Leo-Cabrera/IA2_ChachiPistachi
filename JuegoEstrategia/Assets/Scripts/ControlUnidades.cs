@@ -144,16 +144,16 @@ public class ControlUnidades : MonoBehaviour
 
         List<HexTile> ruta = ElegirRutaHaciaJugador(tropaEnemiga, tropaJugador);
 
-        ////////////////////////////////////////////////////////////////Debug.Log("Ruta hacia vecina del jugador: " + ruta.Count + " casillas");
+        Debug.Log("Ruta hacia vecina del jugador: " + ruta.Count + " casillas");
 
         List<HexTile> recortada = RecortarPorPuntos(ruta, tropaEnemiga);
 
-        ///////////////////////////////////////////////////////////////////////Debug.Log("Ruta recortada: " + recortada.Count + " casillas");
-        //Debug.Log("Coste gastado: " + CalcularCosteRuta(recortada));
+        Debug.Log("Ruta recortada: " + recortada.Count + " casillas");
+        Debug.Log("Coste gastado: " + CalcularCosteRuta(recortada));
 
         foreach (HexTile casilla in ruta)
         {
-            ///////////////////////////////////////////////////Debug.Log("(" + casilla.coordenadaX + ", " + casilla.coordenadaY + ")");
+            Debug.Log("(" + casilla.coordenadaX + ", " + casilla.coordenadaY + ")");
         }
     }
 

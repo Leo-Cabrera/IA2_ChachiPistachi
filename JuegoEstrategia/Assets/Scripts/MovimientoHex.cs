@@ -166,7 +166,7 @@ public class MovimientoHex : MonoBehaviour
             // 2. si es el destino -> return ReconstruirRuta(padre, destino)
 
             if (actual == destino) {
-                //////////////////////////////////////////////////////////////////////////////////////// Debug.Log("Casillas exploradas: " + exploradas);
+                Debug.Log("Casillas exploradas: " + exploradas);
 
                 return ReconstruirRuta(padre, destino);
             }
@@ -207,7 +207,7 @@ public class MovimientoHex : MonoBehaviour
 
         }
 
-         ////////////////////////////////////////////////////////////Debug.Log("Casillas exploradas: " + exploradas);
+         Debug.Log("Casillas exploradas: " + exploradas);
 
         return new List<HexTile>();  // sin ruta
     }

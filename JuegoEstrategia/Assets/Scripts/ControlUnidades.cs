@@ -24,7 +24,6 @@ public class ControlUnidades : MonoBehaviour
     private bool movimientoEnCurso = false;
 
     private bool unidadSeleccionada = false;
-    private bool unidadesReiniciadas = false;
 
     [Header("Interfaz")]
     public TMPro.TextMeshProUGUI textoPuntosMovimiento;
@@ -38,55 +37,42 @@ public class ControlUnidades : MonoBehaviour
     {
 
         if (movimientoEnCurso) return;
-        if (!GameManager.instance.TurnoJugador())
-        {
-            //codigo para el turno del enemigo
-            if (!unidadesReiniciadas) ReiniciarUnidades();
-        }
 
-        else
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            ActualizarTextoPuntos();
-            //codigo para el turno del jugador
-            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+            RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
+
+            if (impacto.collider != null)
             {
-                Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                // Comprobar si hemos pulsado una unidad
+                UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
 
-                RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
-
-                if (impacto.collider != null)
+                if (unidad != null && unidad.esJugador)
                 {
-                    // Comprobar si hemos pulsado una unidad
-                    UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
+                    unidadSeleccionada = true;
+                    MostrarCasillasMovimiento(unidad);
+                    return;
+                }
 
-                    if (unidad != null && unidad.esJugador)
+                // Comprobar si hemos pulsado una casilla
+                HexTile casilla = impacto.collider.GetComponent<HexTile>();
+
+                if (casilla != null && unidadSeleccionada)
+                {
+                    if (casillasAlcanzables.ContainsKey(casilla))
                     {
-                        unidadSeleccionada = true;
-                        MostrarCasillasMovimiento(unidad);
-                        return;
-                    }
+                        movimientoEnCurso = true;
+                        unidadActual.puntosMovimiento -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
+                        StartCoroutine(MoverUnidad(unidadActual, casilla));
 
-                    // Comprobar si hemos pulsado una casilla
-                    HexTile casilla = impacto.collider.GetComponent<HexTile>();
-
-                    if (casilla != null && unidadSeleccionada)
-                    {
-                        if (casillasAlcanzables.ContainsKey(casilla))
-                        {
-                            movimientoEnCurso = true;
-                            unidadActual.puntosMovimientoRestantes -= Mathf.CeilToInt(casillasAlcanzables[casilla]);
-                            unidadesReiniciadas = false;
-                            StartCoroutine(MoverUnidad(unidadActual, casilla));
-
-                            unidadSeleccionada = false;
-                            LimpiarPuntosMovimiento();
-                        }
+                        unidadSeleccionada = false;
+                        LimpiarPuntosMovimiento();
                     }
                 }
             }
         }
-
-        
     }
 
     IEnumerator EsperarMapa()
@@ -210,13 +196,7 @@ public class ControlUnidades : MonoBehaviour
     {
         if (unidadActual != null)
         {
-            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimientoRestantes;
+            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimiento;
         }
-    }
-
-    private void ReiniciarUnidades()
-    {
-        tropaJugador.puntosMovimientoRestantes = tropaJugador.puntosMovimientoMaximos;
-        unidadesReiniciadas = true;
     }
 }

@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
     private bool turnoJugador = true;
     public GameObject btnSigTurno;
     public GameObject textoPensando;
-    public GameObject textoPuntosMovimiento;
     public Temporizador temporizador;
     
 
@@ -35,14 +34,11 @@ public class GameManager : MonoBehaviour
         {
             btnSigTurno.SetActive(true);
             textoPensando.SetActive(false);
-            textoPuntosMovimiento.SetActive(true);
-
         }
         else
         {
             btnSigTurno.SetActive(false);
             textoPensando.SetActive(true);
-            textoPuntosMovimiento.SetActive(false);
         }
     }
     public void CambiarTurno()
@@ -52,9 +48,5 @@ public class GameManager : MonoBehaviour
         {
             temporizador.IniciarTemporizador();
         }
-    }
-    public bool TurnoJugador()
-    {
-        return turnoJugador;
     }
 }

@@ -1,0 +1,818 @@
+fileFormatVersion: 2
+guid: 1cbf2cf0130304b4b955d3822f4aebdb
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7604346764842778512
+    second: Hoja de sprites de seis monedas doradas_0
+  - first:
+      213: -817555169041343080
+    second: Hoja de sprites de seis monedas doradas_1
+  - first:
+      213: 2533846916918693380
+    second: Hoja de sprites de seis monedas doradas_2
+  - first:
+      213: 1817336424988909325
+    second: Hoja de sprites de seis monedas doradas_3
+  - first:
+      213: -9197289180942092857
+    second: Hoja de sprites de seis monedas doradas_4
+  - first:
+      213: 8985884767493942059
+    second: Hoja de sprites de seis monedas doradas_5
+  - first:
+      213: 5825807487267380524
+    second: Hoja de sprites de seis monedas doradas_6
+  - first:
+      213: -8672716638509179130
+    second: Hoja de sprites de seis monedas doradas_7
+  - first:
+      213: 1906183661591405945
+    second: Hoja de sprites de seis monedas doradas_8
+  - first:
+      213: -2360213587817426789
+    second: Hoja de sprites de seis monedas doradas_9
+  - first:
+      213: -7969156785589260077
+    second: Hoja de sprites de seis monedas doradas_10
+  - first:
+      213: -630605652893148055
+    second: Hoja de sprites de seis monedas doradas_11
+  - first:
+      213: 5450735091177006056
+    second: Hoja de sprites de seis monedas doradas_12
+  - first:
+      213: 5030533672497670243
+    second: Hoja de sprites de seis monedas doradas_13
+  - first:
+      213: 3162713693935358513
+    second: Hoja de sprites de seis monedas doradas_14
+  - first:
+      213: -7616711048988222570
+    second: Hoja de sprites de seis monedas doradas_15
+  - first:
+      213: 1255340326999754533
+    second: Hoja de sprites de seis monedas doradas_16
+  - first:
+      213: 6141442531194732730
+    second: Hoja de sprites de seis monedas doradas_17
+  - first:
+      213: -3256762381649642296
+    second: Hoja de sprites de seis monedas doradas_18
+  - first:
+      213: -1259787268161991586
+    second: Hoja de sprites de seis monedas doradas_19
+  - first:
+      213: -2612413971846779150
+    second: Hoja de sprites de seis monedas doradas_20
+  - first:
+      213: 7400026093516725755
+    second: Hoja de sprites de seis monedas doradas_21
+  - first:
+      213: 5663176182981646617
+    second: Hoja de sprites de seis monedas doradas_22
+  - first:
+      213: 5138680432347314039
+    second: Hoja de sprites de seis monedas doradas_23
+  - first:
+      213: -126554705163818230
+    second: Hoja de sprites de seis monedas doradas_24
+  - first:
+      213: -8048247333321638356
+    second: Hoja de sprites de seis monedas doradas_25
+  - first:
+      213: -98242286252933673
+    second: Hoja de sprites de seis monedas doradas_26
+  - first:
+      213: -6014517381089951796
+    second: Hoja de sprites de seis monedas doradas_27
+  - first:
+      213: 1731755503940010660
+    second: Hoja de sprites de seis monedas doradas_28
+  - first:
+      213: -3367027139882423690
+    second: Hoja de sprites de seis monedas doradas_29
+  - first:
+      213: 5277512648137125414
+    second: Hoja de sprites de seis monedas doradas_30
+  - first:
+      213: 7857992567661924619
+    second: Hoja de sprites de seis monedas doradas_31
+  - first:
+      213: 6911270044694866301
+    second: Hoja de sprites de seis monedas doradas_32
+  - first:
+      213: 4898859125889638056
+    second: Hoja de sprites de seis monedas doradas_33
+  - first:
+      213: -1924066247970335990
+    second: Hoja de sprites de seis monedas doradas_34
+  - first:
+      213: 607037888984467314
+    second: Hoja de sprites de seis monedas doradas_35
+  - first:
+      213: 7900190730390406191
+    second: Hoja de sprites de seis monedas doradas_36
+  - first:
+      213: -1162753337169169407
+    second: Hoja de sprites de seis monedas doradas_37
+  - first:
+      213: -1036035138981946568
+    second: Hoja de sprites de seis monedas doradas_38
+  - first:
+      213: -9101126823219044364
+    second: Hoja de sprites de seis monedas doradas_39
+  - first:
+      213: -8858751893965674400
+    second: Hoja de sprites de seis monedas doradas_40
+  - first:
+      213: -6968262340519593434
+    second: Hoja de sprites de seis monedas doradas_41
+  - first:
+      213: -4397055711320374324
+    second: Hoja de sprites de seis monedas doradas_42
+  - first:
+      213: -7536829582123263652
+    second: Hoja de sprites de seis monedas doradas_43
+  - first:
+      213: -5410396385186304969
+    second: Hoja de sprites de seis monedas doradas_44
+  - first:
+      213: 3036680444812574328
+    second: Hoja de sprites de seis monedas doradas_45
+  - first:
+      213: -1282170958227181384
+    second: Hoja de sprites de seis monedas doradas_46
+  - first:
+      213: -6317344994056880856
+    second: Hoja de sprites de seis monedas doradas_47
+  - first:
+      213: 7494355362261496879
+    second: Hoja de sprites de seis monedas doradas_48
+  - first:
+      213: 4715732109166010448
+    second: Hoja de sprites de seis monedas doradas_49
+  - first:
+      213: -1906604886316682530
+    second: Hoja de sprites de seis monedas doradas_50
+  - first:
+      213: -430281802808049652
+    second: Hoja de sprites de seis monedas doradas_51
+  - first:
+      213: 7083304698863650775
+    second: Hoja de sprites de seis monedas doradas_52
+  - first:
+      213: -8259224052582063651
+    second: Hoja de sprites de seis monedas doradas_53
+  - first:
+      213: 5264017911968154364
+    second: Hoja de sprites de seis monedas doradas_54
+  - first:
+      213: 8338897842021697378
+    second: Hoja de sprites de seis monedas doradas_55
+  - first:
+      213: -3340051472139504926
+    second: Hoja de sprites de seis monedas doradas_56
+  - first:
+      213: -7401141209629862413
+    second: Hoja de sprites de seis monedas doradas_57
+  - first:
+      213: -6027569432395313956
+    second: Hoja de sprites de seis monedas doradas_58
+  - first:
+      213: -202561651092955606
+    second: Hoja de sprites de seis monedas doradas_59
+  - first:
+      213: -7930158018414523213
+    second: Hoja de sprites de seis monedas doradas_60
+  - first:
+      213: 3542112480963952968
+    second: Hoja de sprites de seis monedas doradas_61
+  - first:
+      213: 6045154784600408587
+    second: Hoja de sprites de seis monedas doradas_62
+  - first:
+      213: 1309299076584789707
+    second: Hoja de sprites de seis monedas doradas_63
+  - first:
+      213: 6896286873904656762
+    second: Hoja de sprites de seis monedas doradas_64
+  - first:
+      213: 7295909369484071120
+    second: Hoja de sprites de seis monedas doradas_65
+  - first:
+      213: 8084008522737501970
+    second: Hoja de sprites de seis monedas doradas_66
+  - first:
+      213: -2593304737875419479
+    second: Hoja de sprites de seis monedas doradas_67
+  - first:
+      213: 125447856268707047
+    second: Hoja de sprites de seis monedas doradas_68
+  - first:
+      213: -1130008493634654155
+    second: Hoja de sprites de seis monedas doradas_69
+  - first:
+      213: -8209782618048122495
+    second: Hoja de sprites de seis monedas doradas_70
+  - first:
+      213: 674231940247484477
+    second: Hoja de sprites de seis monedas doradas_71
+  - first:
+      213: 8035267201163958462
+    second: Hoja de sprites de seis monedas doradas_72
+  - first:
+      213: -6268627526879742859
+    second: Hoja de sprites de seis monedas doradas_73
+  - first:
+      213: -6086517266416259867
+    second: Hoja de sprites de seis monedas doradas_74
+  - first:
+      213: 3998512892178252984
+    second: Hoja de sprites de seis monedas doradas_75
+  - first:
+      213: -1757040544952380724
+    second: Hoja de sprites de seis monedas doradas_76
+  - first:
+      213: 7896097503033948474
+    second: Hoja de sprites de seis monedas doradas_77
+  - first:
+      213: -847432780113852214
+    second: Hoja de sprites de seis monedas doradas_78
+  - first:
+      213: -986734454051740798
+    second: Hoja de sprites de seis monedas doradas_79
+  - first:
+      213: -6062946299327003170
+    second: Hoja de sprites de seis monedas doradas_80
+  - first:
+      213: -9133734443765599709
+    second: Hoja de sprites de seis monedas doradas_81
+  - first:
+      213: 3339126986876107716
+    second: Hoja de sprites de seis monedas doradas_82
+  - first:
+      213: 8778428759562592876
+    second: Hoja de sprites de seis monedas doradas_83
+  - first:
+      213: 595761638275269651
+    second: Hoja de sprites de seis monedas doradas_84
+  - first:
+      213: 6492382382247926091
+    second: Hoja de sprites de seis monedas doradas_85
+  - first:
+      213: 6304678058597336730
+    second: Hoja de sprites de seis monedas doradas_86
+  - first:
+      213: 6228528602801357009
+    second: Hoja de sprites de seis monedas doradas_87
+  - first:
+      213: -2043295947247402359
+    second: Hoja de sprites de seis monedas doradas_88
+  - first:
+      213: 4982215870689601341
+    second: Hoja de sprites de seis monedas doradas_89
+  - first:
+      213: -2878306005045097226
+    second: Hoja de sprites de seis monedas doradas_90
+  - first:
+      213: 4406895805818212469
+    second: Hoja de sprites de seis monedas doradas_91
+  - first:
+      213: -1703746620007909666
+    second: Hoja de sprites de seis monedas doradas_92
+  - first:
+      213: 8857528817800386929
+    second: Hoja de sprites de seis monedas doradas_93
+  - first:
+      213: 797520221063763129
+    second: Hoja de sprites de seis monedas doradas_94
+  - first:
+      213: 4101415939992445850
+    second: Hoja de sprites de seis monedas doradas_95
+  - first:
+      213: 3680623188325222852
+    second: Hoja de sprites de seis monedas doradas_96
+  - first:
+      213: 1965834322315544869
+    second: Hoja de sprites de seis monedas doradas_97
+  - first:
+      213: -8721428477424093249
+    second: Hoja de sprites de seis monedas doradas_98
+  - first:
+      213: 8133571357636568973
+    second: Hoja de sprites de seis monedas doradas_99
+  - first:
+      213: -5008360117207845582
+    second: Hoja de sprites de seis monedas doradas_100
+  - first:
+      213: -2374811174735009508
+    second: Hoja de sprites de seis monedas doradas_101
+  - first:
+      213: -5638239159984316972
+    second: Hoja de sprites de seis monedas doradas_102
+  - first:
+      213: 532147381804132254
+    second: Hoja de sprites de seis monedas doradas_103
+  - first:
+      213: 12167776991715595
+    second: Hoja de sprites de seis monedas doradas_104
+  - first:
+      213: 2329302976127000755
+    second: Hoja de sprites de seis monedas doradas_105
+  - first:
+      213: 7582228327639527624
+    second: Hoja de sprites de seis monedas doradas_106
+  - first:
+      213: -7959023686326708082
+    second: Hoja de sprites de seis monedas doradas_107
+  - first:
+      213: -3063203579670986822
+    second: Hoja de sprites de seis monedas doradas_108
+  - first:
+      213: 3777686556233033051
+    second: Hoja de sprites de seis monedas doradas_109
+  - first:
+      213: -8066334591022709856
+    second: Hoja de sprites de seis monedas doradas_110
+  - first:
+      213: -8726678528659285655
+    second: Hoja de sprites de seis monedas doradas_111
+  - first:
+      213: -5146192283226094371
+    second: Hoja de sprites de seis monedas doradas_112
+  - first:
+      213: 2093545867295893061
+    second: Hoja de sprites de seis monedas doradas_113
+  - first:
+      213: 5147871383579198551
+    second: Hoja de sprites de seis monedas doradas_114
+  - first:
+      213: -3290685611100592683
+    second: Hoja de sprites de seis monedas doradas_115
+  - first:
+      213: 2423679238083020161
+    second: Hoja de sprites de seis monedas doradas_116
+  - first:
+      213: 7483798163779801251
+    second: Hoja de sprites de seis monedas doradas_117
+  - first:
+      213: 5272414749407683143
+    second: Hoja de sprites de seis monedas doradas_118
+  - first:
+      213: 8390150949413615016
+    second: Hoja de sprites de seis monedas doradas_119
+  - first:
+      213: 5288598761392535698
+    second: Hoja de sprites de seis monedas doradas_120
+  - first:
+      213: -2332457516145851901
+    second: Hoja de sprites de seis monedas doradas_121
+  - first:
+      213: 3497282951857858625
+    second: Hoja de sprites de seis monedas doradas_122
+  - first:
+      213: -8367458194117786446
+    second: Hoja de sprites de seis monedas doradas_123
+  - first:
+      213: 4855073848059127959
+    second: Hoja de sprites de seis monedas doradas_124
+  - first:
+      213: -2422583460225722188
+    second: Hoja de sprites de seis monedas doradas_125
+  - first:
+      213: -5031272615897169180
+    second: Hoja de sprites de seis monedas doradas_126
+  - first:
+      213: -1282279034029580811
+    second: Hoja de sprites de seis monedas doradas_127
+  - first:
+      213: -313392143947325903
+    second: Hoja de sprites de seis monedas doradas_128
+  - first:
+      213: -3690340609190041255
+    second: Hoja de sprites de seis monedas doradas_129
+  - first:
+      213: 1198738461210326844
+    second: Hoja de sprites de seis monedas doradas_130
+  - first:
+      213: -526648025223401007
+    second: Hoja de sprites de seis monedas doradas_131
+  - first:
+      213: 497577288454632368
+    second: Hoja de sprites de seis monedas doradas_132
+  - first:
+      213: 2343968328047752214
+    second: Hoja de sprites de seis monedas doradas_133
+  - first:
+      213: 6269101123168718867
+    second: Hoja de sprites de seis monedas doradas_134
+  - first:
+      213: -4120250500794325490
+    second: Hoja de sprites de seis monedas doradas_135
+  - first:
+      213: -8366826666229823801
+    second: Hoja de sprites de seis monedas doradas_136
+  - first:
+      213: -798818342888531020
+    second: Hoja de sprites de seis monedas doradas_137
+  - first:
+      213: 5057510264868853192
+    second: Hoja de sprites de seis monedas doradas_138
+  - first:
+      213: -8227079926020397204
+    second: Hoja de sprites de seis monedas doradas_139
+  - first:
+      213: -3638571295470109841
+    second: Hoja de sprites de seis monedas doradas_140
+  - first:
+      213: 4140014497108241981
+    second: Hoja de sprites de seis monedas doradas_141
+  - first:
+      213: -1614688150753671135
+    second: Hoja de sprites de seis monedas doradas_142
+  - first:
+      213: 7313555649401381717
+    second: Hoja de sprites de seis monedas doradas_143
+  - first:
+      213: -4991220765422365086
+    second: Hoja de sprites de seis monedas doradas_144
+  - first:
+      213: -2805590428429897503
+    second: Hoja de sprites de seis monedas doradas_145
+  - first:
+      213: 35019756808618928
+    second: Hoja de sprites de seis monedas doradas_146
+  - first:
+      213: 4332812354137327415
+    second: Hoja de sprites de seis monedas doradas_147
+  - first:
+      213: 7856397073340178805
+    second: Hoja de sprites de seis monedas doradas_148
+  - first:
+      213: 5805466856809921971
+    second: Hoja de sprites de seis monedas doradas_149
+  - first:
+      213: -1856958886568385665
+    second: Hoja de sprites de seis monedas doradas_150
+  - first:
+      213: -4637280642726966253
+    second: Hoja de sprites de seis monedas doradas_151
+  - first:
+      213: -1012731410343492802
+    second: Hoja de sprites de seis monedas doradas_152
+  - first:
+      213: 2089458081527996948
+    second: Hoja de sprites de seis monedas doradas_153
+  - first:
+      213: -1646957209914512300
+    second: Hoja de sprites de seis monedas doradas_154
+  - first:
+      213: 8240518082493648498
+    second: Hoja de sprites de seis monedas doradas_155
+  - first:
+      213: -3906605713582178993
+    second: Hoja de sprites de seis monedas doradas_156
+  - first:
+      213: 2072142410903287953
+    second: Hoja de sprites de seis monedas doradas_157
+  - first:
+      213: -1712871108214001444
+    second: Hoja de sprites de seis monedas doradas_158
+  - first:
+      213: -8767018187351043376
+    second: Hoja de sprites de seis monedas doradas_159
+  - first:
+      213: 2329976492872840496
+    second: Hoja de sprites de seis monedas doradas_160
+  - first:
+      213: 8982669607869111902
+    second: Hoja de sprites de seis monedas doradas_161
+  - first:
+      213: 5441846332688426440
+    second: Hoja de sprites de seis monedas doradas_162
+  - first:
+      213: -532163094574269942
+    second: Hoja de sprites de seis monedas doradas_163
+  - first:
+      213: 8655668217991296968
+    second: Hoja de sprites de seis monedas doradas_164
+  - first:
+      213: -7815761110426178879
+    second: Hoja de sprites de seis monedas doradas_165
+  - first:
+      213: -481711448445960948
+    second: Hoja de sprites de seis monedas doradas_166
+  - first:
+      213: -2898873823513410727
+    second: Hoja de sprites de seis monedas doradas_167
+  - first:
+      213: -1178434703168162012
+    second: Hoja de sprites de seis monedas doradas_168
+  - first:
+      213: -3454683409319199187
+    second: Hoja de sprites de seis monedas doradas_169
+  - first:
+      213: 1697934346999737514
+    second: Hoja de sprites de seis monedas doradas_170
+  - first:
+      213: -2271229009193910485
+    second: Hoja de sprites de seis monedas doradas_171
+  - first:
+      213: -4867311958691318357
+    second: Hoja de sprites de seis monedas doradas_172
+  - first:
+      213: 8559342509193714841
+    second: Hoja de sprites de seis monedas doradas_173
+  - first:
+      213: 7271282001805787236
+    second: Hoja de sprites de seis monedas doradas_174
+  - first:
+      213: 7047103428664133496
+    second: Hoja de sprites de seis monedas doradas_175
+  - first:
+      213: 2145012493458260025
+    second: Hoja de sprites de seis monedas doradas_176
+  - first:
+      213: 6496944368065515750
+    second: Hoja de sprites de seis monedas doradas_177
+  - first:
+      213: 4394492497141364022
+    second: Hoja de sprites de seis monedas doradas_178
+  - first:
+      213: 4229929134367316324
+    second: Hoja de sprites de seis monedas doradas_179
+  - first:
+      213: 3065572120990702519
+    second: Hoja de sprites de seis monedas doradas_180
+  - first:
+      213: 7656964738823667183
+    second: Hoja de sprites de seis monedas doradas_181
+  - first:
+      213: -4808778242483257930
+    second: Hoja de sprites de seis monedas doradas_182
+  - first:
+      213: 1977687571639858959
+    second: Hoja de sprites de seis monedas doradas_183
+  - first:
+      213: -2807692743725982651
+    second: Hoja de sprites de seis monedas doradas_184
+  - first:
+      213: -8669214129908706931
+    second: Hoja de sprites de seis monedas doradas_185
+  - first:
+      213: -8893347946232967919
+    second: Hoja de sprites de seis monedas doradas_186
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Hoja de sprites de seis monedas doradas_1
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 362
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89d9105c7e577a4f0800000000000000
+      internalID: -817555169041343080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Hoja de sprites de seis monedas doradas_2
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 362
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40e482698580a2320800000000000000
+      internalID: 2533846916918693380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Hoja de sprites de seis monedas doradas_3
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 362
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0f97d099d9783910800000000000000
+      internalID: 1817336424988909325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Hoja de sprites de seis monedas doradas_4
+      rect:
+        serializedVersion: 2
+        x: 1448
+        y: 0
+        width: 362
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c53761283aac5080800000000000000
+      internalID: -9197289180942092857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Hoja de sprites de seis monedas doradas_5
+      rect:
+        serializedVersion: 2
+        x: 1810
+        y: 0
+        width: 362
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2be117369644bc70800000000000000
+      internalID: 8985884767493942059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Hoja de sprites de seis monedas doradas_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 362
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c94816e0fb3ca1c43833c4c49ec64ef2
+      internalID: 7604346764842778512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 49525d016a089e94bacdcbc669fee828
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":362.0,"y":724.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Hoja de sprites de seis monedas doradas_0: 7604346764842778512
+      Hoja de sprites de seis monedas doradas_1: -817555169041343080
+      Hoja de sprites de seis monedas doradas_2: 2533846916918693380
+      Hoja de sprites de seis monedas doradas_3: 1817336424988909325
+      Hoja de sprites de seis monedas doradas_4: -9197289180942092857
+      Hoja de sprites de seis monedas doradas_5: 8985884767493942059
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

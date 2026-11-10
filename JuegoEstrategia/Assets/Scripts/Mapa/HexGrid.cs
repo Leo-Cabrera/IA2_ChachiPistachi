@@ -22,7 +22,10 @@ public class HexGrid : MonoBehaviour
 
     public bool mapaCreado = false;
 
-     // Sprite que se asignara a cada tipo de terreno
+    //gestor al que pediremos colocar la moneda cuando el mapa ya esté creado para que no dé problemas
+    public GestorMonedas gestorMonedas;
+
+    // Sprite que se asignara a cada tipo de terreno
     [Header("Sprites de terreno")]
     public Sprite spritePlanta;
     public Sprite spriteFuego;
@@ -106,6 +109,12 @@ public class HexGrid : MonoBehaviour
         }
 
         mapaCreado = true;
+
+        //despues de asignarle un gestor, le pedimos colocar la moneda estando ya el mapa creado
+        if (gestorMonedas != null)
+        {
+            gestorMonedas.ColocarMoneda();
+        }
     }
 
     // Devuelve un tipo de terreno aleatorio segun las probabilidades indicadas

@@ -9,6 +9,9 @@ public class GestorMonedas: MonoBehaviour
     public int columna = 13;
     public int fila = 7;
 
+    
+    private HexTile casillaMoneda; //para guardar casilla donde se coloca la moneda
+
     public void ColocarMoneda()
     {
         //para comprobar que hemos asignaddo cosas en el inspector antes de continuar
@@ -34,5 +37,24 @@ public class GestorMonedas: MonoBehaviour
         }
 
         moneda.transform.position = casilla.transform.position; //si no entra a ningún if, ponemos el objeto moneda en la casilla
+
+        casillaMoneda = casilla; //donde este la moneda asignamos esa casilla a casillamoneda
+    }
+
+    public void RecogerMoneda(HexTile casillaDestino)  //recibe el dato de la casilla en la que se esta para ver si es casillamoneda
+    {
+        
+        if (casillaMoneda == null) //si no hay una moneda en esa casilla pues no se hace nada
+        {
+            return;
+        }
+
+        if (casillaDestino == casillaMoneda)  //si hay una moneda en esa casilla
+        {
+            moneda.SetActive(false);  //desactivamos el gameobject de moneda
+            casillaMoneda = null;  //actualizamos casillamoneda porque ya no habrá una moneda en esa casilla
+
+            Debug.Log("Moneda recogida.");  //para comprobar que se hace 
+        }
     }
 }

@@ -32,6 +32,9 @@ public class ControlUnidades : MonoBehaviour
     [Header("Interfaz")]
     public TMPro.TextMeshProUGUI textoPuntosMovimiento;
 
+    //hacemos el gestor que comprobara si hay una moneda cuando una unidad este en una casilla
+    public GestorMonedas gestorMonedas;  
+
     private void Awake()
     {
         instance = this;
@@ -228,6 +231,13 @@ public class ControlUnidades : MonoBehaviour
 
         unidad.coordenadaX = destino.coordenadaX;
         unidad.coordenadaY = destino.coordenadaY;
+
+        //una vez ya llega a la posicion, comprueba si la casilla de destino tiene una moneda
+        if (gestorMonedas != null)  //si el campo de controlunidades que tiene gestormonedas tiene algo asignado
+        {
+        //llamamos al método que hace que si en la casilla en la que estamos, destino, hay una moneda pues se recoja
+            gestorMonedas.RecogerMoneda(destino);  
+        }
 
         ActualizarTextoPuntos();
 

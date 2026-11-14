@@ -6,6 +6,8 @@ public class MovimientoHex : MonoBehaviour
 {
     public HexGrid grid;
 
+    public PesosTerreno pesosTerreno;
+
     // Devuelve las casillas vecinas de una casilla
     public List<HexTile> ObtenerVecinas(HexTile casilla)
     {
@@ -42,77 +44,69 @@ public class MovimientoHex : MonoBehaviour
     
     public Dictionary<HexTile, float> CalcularCasillasAlcanzables(UnidadHex unidad)
     {
-        // Guarda cada casilla y el coste necesario para llegar a ella
-        Dictionary<HexTile, float> costes = new Dictionary<HexTile, float>();
+        Dictionary<HexTile, float> alcanzables = new Dictionary<HexTile, float>();
+        Queue<HexTile> pendientes = new Queue<HexTile>();
 
-        // Lista de casillas que todavía debemos explorar
-        List<HexTile> pendientes = new List<HexTile>();
-
-        // Obtiene la casilla donde está actualmente la unidad
         HexTile inicio = grid.ObtenerCasilla(unidad.coordenadaX, unidad.coordenadaY);
 
         if (inicio == null)
-        {
-            return costes;
-        }
+            return alcanzables;
 
-        // La casilla inicial tiene coste cero
-        costes[inicio] = 0f;
-        pendientes.Add(inicio);
+        int alcance = pesosTerreno.ObtenerPeso(unidad.datosTropa, inicio.tipoTerreno);
+
+        Debug.Log("Tropa: " + unidad.datosTropa.nombreTropa +" | Nivel: " + unidad.datosTropa.nivel +" | Terreno inicial: " + inicio.tipoTerreno +" | Influencia: " + alcance);
+
+        if (alcance <= 0)
+            return alcanzables;
+
+        alcanzables[inicio] = 0;
+        pendientes.Enqueue(inicio);
 
         while (pendientes.Count > 0)
         {
-            // Busca la casilla pendiente con menor coste acumulado
-            HexTile actual = pendientes[0];
+            HexTile actual = pendientes.Dequeue();
+            int distancia = Mathf.CeilToInt(alcanzables[actual]);
 
-            foreach (HexTile casilla in pendientes)
-            {
-                if (costes[casilla] < costes[actual])
-                {
-                    actual = casilla;
-                }
-            }
+            if (distancia >= alcance)
+                continue;
 
-            pendientes.Remove(actual);
-
-            // Comprueba las seis casillas vecinas
             foreach (HexTile vecina in ObtenerVecinas(actual))
             {
-                // No permite atravesar terrenos no transitables
-                if (!vecina.esTransitable)
-                {
+                if (!vecina.esTransitable || EstaOcupada(vecina, unidad))
                     continue;
-                }
 
-                // No permite atravesar casillas ocupadas por otras unidades
-                if (EstaOcupada(vecina))
-                {
+                int influenciaVecina = pesosTerreno.ObtenerPeso(unidad.datosTropa, vecina.tipoTerreno);
+
+                if (influenciaVecina <= 0)
                     continue;
-                }
 
-                // Calcula el coste acumulado para llegar a la vecina
-                float nuevoCoste = costes[actual] + vecina.costeMovimiento;
+                int nuevaDistancia = distancia + 1;
 
-                // No permite superar los puntos de movimiento disponibles
-                if (nuevoCoste > unidad.puntosMovimientoRestantes)
+                if (!alcanzables.ContainsKey(vecina) || nuevaDistancia < alcanzables[vecina])
                 {
-                    continue;
-                }
-
-                // Si no habíamos llegado antes o encontramos un camino más barato
-                if (!costes.ContainsKey(vecina) || nuevoCoste < costes[vecina])
-                {
-                    costes[vecina] = nuevoCoste;
-
-                    if (!pendientes.Contains(vecina))
-                    {
-                        pendientes.Add(vecina);
-                    }
+                    alcanzables[vecina] = nuevaDistancia;
+                    pendientes.Enqueue(vecina);
                 }
             }
         }
 
-        return costes;
+        return alcanzables;
+    }
+
+    public bool EstaOcupada(HexTile casilla, UnidadHex unidadActual)
+    {
+        UnidadHex[] unidades = FindObjectsOfType<UnidadHex>();
+
+        foreach (UnidadHex unidad in unidades)
+        {
+            if (unidad == unidadActual)
+                continue;
+
+            if (unidad.coordenadaX == casilla.coordenadaX && unidad.coordenadaY == casilla.coordenadaY)
+                return true;
+        }
+
+        return false;
     }
 
     public bool EstaOcupada(HexTile casilla)
@@ -121,11 +115,8 @@ public class MovimientoHex : MonoBehaviour
 
         foreach (UnidadHex unidad in unidades)
         {
-            if (unidad.coordenadaX == casilla.coordenadaX &&
-                unidad.coordenadaY == casilla.coordenadaY)
-            {
+            if (unidad.coordenadaX == casilla.coordenadaX && unidad.coordenadaY == casilla.coordenadaY)
                 return true;
-            }
         }
 
         return false;
@@ -189,10 +180,12 @@ public class MovimientoHex : MonoBehaviour
                 if (!vecina.esTransitable)
                     continue;
 
-                if (EstaOcupada(vecina) && vecina != destino)
+                if (EstaOcupada(vecina, unidad))
                     continue;
 
-                float costePaso = vecina.costeMovimiento;
+                int peso = pesosTerreno.ObtenerPeso(unidad.datosTropa, vecina.tipoTerreno);
+                if (peso == 0) continue;
+                float costePaso = peso;
                 float gTentativo = g[actual] + costePaso;
 
                 if (g.ContainsKey(vecina) && gTentativo >= g[vecina])

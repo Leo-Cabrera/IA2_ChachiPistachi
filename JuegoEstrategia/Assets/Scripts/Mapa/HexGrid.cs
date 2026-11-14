@@ -41,6 +41,7 @@ public class HexGrid : MonoBehaviour
     [System.Serializable]
     public class ZonaTerreno
     {
+        public int id;
         public TipoTerreno tipo;
         public int centroX;
         public int centroY;
@@ -114,11 +115,14 @@ public class HexGrid : MonoBehaviour
                 hexTile.coordenadaX = x;
                 hexTile.coordenadaY = y;
 
-                 // Elige aleatoriamente el tipo de terreno
-                TipoTerreno terreno = ObtenerTerrenoPorZona(x, y);
+                 // Obtiene la zona correspondiente a esta posición
+                ZonaTerreno zona = ObtenerZonaPorPosicion(x, y);
 
-                // Configura las estadisticas de la casilla y le pasa el sprite adecuado
-                hexTile.ConfigurarTerreno(terreno, ObtenerSprite(terreno));
+                // Guarda el identificador de la zona
+                hexTile.idZonaTerreno = zona.id;
+
+                // Configura el terreno y su sprite
+                hexTile.ConfigurarTerreno(zona.tipo, ObtenerSprite(zona.tipo));
 
                 // Guarda la referencia a la casilla en la matriz
                 casillas[x, y] = hexTile;
@@ -233,33 +237,38 @@ public class HexGrid : MonoBehaviour
             TipoTerreno tipo = terrenos[i % terrenos.Length];
 
             ZonaTerreno zona = new ZonaTerreno();
+            zona.id = i;
             zona.tipo = tipo;
             zona.centroX = x;
             zona.centroY = y;
+
 
             zonas.Add(zona);
         }
     }
 
-    TipoTerreno ObtenerTerrenoPorZona(int x, int y)
+    ZonaTerreno ObtenerZonaPorPosicion(int x, int y)
     {
         ZonaTerreno zonaCercana = null;
-        float distanciaMinima = float.MaxValue;
+        float menorDistancia = float.MaxValue;
 
         foreach (ZonaTerreno zona in zonas)
         {
-            float distancia = Vector2.Distance(new Vector2(x, y), new Vector2(zona.centroX, zona.centroY));
+            float distancia = Vector2.Distance(
+                new Vector2(x, y),
+                new Vector2(zona.centroX, zona.centroY)
+            );
 
             //distancia += Random.Range(-0.8f, 0.8f);
 
-            if (distancia < distanciaMinima)
+            if (distancia < menorDistancia)
             {
-                distanciaMinima = distancia;
+                menorDistancia = distancia;
                 zonaCercana = zona;
             }
         }
 
-        return zonaCercana.tipo;
+        return zonaCercana;
     }
 
 }

@@ -1141,7 +1141,7 @@ MonoBehaviour:
   tamanoHexagono: 1
   prefabHexagono: {fileID: 834078397821229424, guid: 483eab9c79136a94d8cfb018322323a5, type: 3}
   mapaCreado: 0
-  gestorMonedas: {fileID: 0}
+  gestorMonedas: {fileID: 970767231}
   spritePlanta: {fileID: 21300000, guid: 8b242143ad5274147b37de9be774e9f9, type: 3}
   spriteFuego: {fileID: 21300000, guid: 3b49d657d1f1b314d8f152ed3ab1f9f4, type: 3}
   spriteTierra: {fileID: 21300000, guid: a8053e3d1cb2089439930aa110595f61, type: 3}
@@ -1638,6 +1638,7 @@ MonoBehaviour:
   tropaEnemiga: {fileID: 592218789}
   prefabPuntoMovimiento: {fileID: 4068465308711417416, guid: e61d956a7a6d6c74f81b78cade51a7e8, type: 3}
   textoPuntosMovimiento: {fileID: 192775755}
+  gestorMonedas: {fileID: 970767231}
 --- !u!4 &1956697600
 Transform:
   m_ObjectHideFlags: 0

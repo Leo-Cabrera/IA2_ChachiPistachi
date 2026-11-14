@@ -9,7 +9,10 @@ public class GestorMonedas: MonoBehaviour
     public int columna = 13;
     public int fila = 7;
 
-    
+    //contadores de las monedas de cada uno
+    [SerializeField] private int monedasJugador = 0;
+    [SerializeField] private int monedasIA = 0;
+
     private HexTile casillaMoneda; //para guardar casilla donde se coloca la moneda
 
     public void ColocarMoneda()
@@ -41,7 +44,8 @@ public class GestorMonedas: MonoBehaviour
         casillaMoneda = casilla; //donde este la moneda asignamos esa casilla a casillamoneda
     }
 
-    public void RecogerMoneda(HexTile casillaDestino)  //recibe el dato de la casilla en la que se esta para ver si es casillamoneda
+    //recibe el dato de la casilla en la que se esta para ver si es casillamoneda y también el tipo de unidad (si jugador o IA)
+    public void RecogerMoneda(HexTile casillaDestino, UnidadHex unidad)  
     {
         
         if (casillaMoneda == null) //si no hay una moneda en esa casilla pues no se hace nada
@@ -54,7 +58,17 @@ public class GestorMonedas: MonoBehaviour
             moneda.SetActive(false);  //desactivamos el gameobject de moneda
             casillaMoneda = null;  //actualizamos casillamoneda porque ya no habrá una moneda en esa casilla
 
-            Debug.Log("Moneda recogida.");  //para comprobar que se hace 
+            //la moneda del mapa da 3 monedas 
+            if (unidad.esJugador == true)  //si quien ha cogido la moneda es una unidad del jugador, ya usamos el esjugador en unidadhex
+            {
+                monedasJugador += 3;
+            }
+            else  //sino habra sido la de la IA
+            {
+                monedasIA += 3;
+            }
+
+            Debug.Log($"Moneda recogida. Jugador: {monedasJugador}, IA: {monedasIA}");  //para comprobar, ya lo haremos en canva
         }
     }
 }

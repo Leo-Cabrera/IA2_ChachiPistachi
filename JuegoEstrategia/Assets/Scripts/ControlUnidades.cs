@@ -236,7 +236,7 @@ public class ControlUnidades : MonoBehaviour
         if (gestorMonedas != null)  //si el campo de controlunidades que tiene gestormonedas tiene algo asignado
         {
         //llamamos al método que hace que si en la casilla en la que estamos, destino, hay una moneda pues se recoja
-            gestorMonedas.RecogerMoneda(destino);  
+            gestorMonedas.RecogerMoneda(destino, unidad);  //parametros que indican donde ha llegado y quien ha llegado
         }
 
         ActualizarTextoPuntos();

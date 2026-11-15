@@ -749,6 +749,7 @@ MonoBehaviour:
   columnaMaxima: 24
   filaMinima: 4
   filaMaxima: 11
+  monedasPorTanda: 2
 --- !u!4 &970767232
 Transform:
   m_ObjectHideFlags: 0

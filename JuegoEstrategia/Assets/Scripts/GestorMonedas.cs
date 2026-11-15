@@ -16,8 +16,11 @@ public class GestorMonedas: MonoBehaviour
     [SerializeField] private int columnaMaxima = 19;
     [SerializeField] private int filaMinima = 9;
     [SerializeField] private int filaMaxima = 11;
+    [SerializeField] private int monedasPorTanda = 5;  //para poder editar el valor desde el inspector de cuantas monedas quiero que aparezcan
 
     private GameObject monedaCreada; //guardar la referencia de la moneda que se cree
+
+    private int monedasEnMapa = 0; //cuenta las monedas que siguen en el tablero
 
     public void ColocarMoneda()
     {
@@ -53,17 +56,27 @@ public class GestorMonedas: MonoBehaviour
             return;
         }
 
-        //aleatoriamente seleccionamos una casilla disponible de la lista
-        int indice = Random.Range(0, disponibles.Count);
-        HexTile casilla = disponibles[indice];  //guardamos en casilla la casilla de la lista disponible seleccionada
+        //vamos a usar el metodo de unity de math.min porque asi en cantidad se guarda el minimo, o sea si tenemos disponibles 13
+        //casillas, se guardara en cantidad 5, en cambio si tenemos disponibles solo 2 casillas pues se guardara este 2 como el minimo
+        int cantidad = Mathf.Min(monedasPorTanda, disponibles.Count);
 
-        //crea una copia del prefab moneda y guarda la referencia de esa copia en monedacreada
-        monedaCreada = Instantiate(moneda);
+        for (int i = 0; i < cantidad; i++)  //hacemos el for para crear la cantidad seleccionada
+        {
+            //aleatoriamente seleccionamos una casilla disponible de la lista
+            int indice = Random.Range(0, disponibles.Count);
+            HexTile casilla = disponibles[indice];  //guardamos en casilla la casilla de la lista disponible seleccionada
 
-        //mueve la copia a la posición de la casilla seleccionada con el range
-        monedaCreada.transform.position = casilla.transform.position; 
+            //crea una copia del prefab moneda y guarda la referencia de esa copia en monedacreada
+            monedaCreada = Instantiate(moneda);
+            monedasEnMapa++; //sumamos la moneda que acabamos de colocar
 
-        casilla.monedaEnCasilla = monedaCreada; //así esa casilla se guarda la referencia de la moneda que tiene creada ahi
+            //mueve la copia a la posición de la casilla seleccionada con el range
+            monedaCreada.transform.position = casilla.transform.position;
+            casilla.monedaEnCasilla = monedaCreada; //así esa casilla se guarda la referencia de la moneda que tiene creada ahi
+
+            //quitamos esa casilla de la lista para que no vuelva a salir en la siguiente iteracion y en una misma haya dos monedas
+            disponibles.RemoveAt(indice);
+        }
     }
 
     //recibe el dato de la casilla en la que se esta para ver si es casillamoneda y también el tipo de unidad (si jugador o IA)
@@ -86,6 +99,13 @@ public class GestorMonedas: MonoBehaviour
             }
 
             Debug.Log($"Moneda recogida. Jugador: {monedasJugador}, IA: {monedasIA}");  //para comprobar, ya lo haremos en canva
+
+            monedasEnMapa--;
+
+            if (monedasEnMapa == 0)  //cuando ya no queden monedas en el tablero, volveremos a colocar aleatoriamente 
+            {
+                ColocarMoneda();  //utilizando esta llamada que es el metodo que crea las 5 aleatorias
+            }
         }
     }
 }

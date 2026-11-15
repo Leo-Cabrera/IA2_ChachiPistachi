@@ -15,10 +15,6 @@ public class UnidadHex : MonoBehaviour
 
     [Header("Movimiento")]
     //Cantidad de movimiento disponible para la unidad durante su turno
-    public int puntosMovimientoRestantes = 0;
-    public int puntosMovimientoMaximos = 0;
-    public bool yaSeHaMovido = false;
-
-    [Header("Datos de la tropa")]
-    public DatosTropa datosTropa;
+    public int puntosMovimientoRestantes = 3;
+    public int puntosMovimientoMaximos = 3;
 }

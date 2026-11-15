@@ -17,6 +17,8 @@ public class HexTile : MonoBehaviour
     [Header("Visual")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    public int idZonaTerreno;
+
     public void ConfigurarTerreno(TipoTerreno tipo, Sprite sprite)
     {
         tipoTerreno = tipo;
@@ -55,8 +57,8 @@ public class HexTile : MonoBehaviour
                 break;
 
             case TipoTerreno.Agua:
-                esTransitable = false;
-                costeMovimiento = 999f;
+                esTransitable = true;
+                costeMovimiento = 1f;
                 break;
         }
     }

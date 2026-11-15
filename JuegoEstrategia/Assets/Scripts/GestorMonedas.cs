@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GestorMonedas: MonoBehaviour
 {
@@ -6,14 +7,20 @@ public class GestorMonedas: MonoBehaviour
     public MovimientoHex movimiento;  //para saber si sera una casilla a la que pueda moverse el personaje 
     public GameObject moneda;  //guardarmeos el modelo de la moneda
 
-    public int columna = 13;
-    public int fila = 7;
 
     //contadores de las monedas de cada uno
     [SerializeField] private int monedasJugador = 0;
     [SerializeField] private int monedasIA = 0;
 
+    //los vamos a usar para delimitar la zona donde pueden aparecer las monedas
+    [SerializeField] private int columnaMinima = 8;
+    [SerializeField] private int columnaMaxima = 19;
+    [SerializeField] private int filaMinima = 9;
+    [SerializeField] private int filaMaxima = 11;
+
     private HexTile casillaMoneda; //para guardar casilla donde se coloca la moneda
+
+    private GameObject monedaCreada; //guardar la referencia de la moneda que se cree
 
     public void ColocarMoneda()
     {
@@ -24,24 +31,43 @@ public class GestorMonedas: MonoBehaviour
             return;
         }
 
-        //guardamos un objeto tile en casilla, nos guardamos la casilla en columna y fila que elijamos
-        HexTile casilla = grid.ObtenerCasilla(columna, fila);  
 
-        if (casilla == null)  //si las coordenadas no existen aunque es poco probable que pase
+        List<HexTile> disponibles = new List<HexTile>();  //lista para las tiles disponibles donde podran apaarecer moendas
+
+        for (int x = columnaMinima; x <= columnaMaxima; x++)  //que aparezcen a partir de los limites que pongamos
         {
-            Debug.LogWarning("Las coordenadas no pertenecen al mapa.");
+            for (int y = filaMinima; y <= filaMaxima; y++)
+            {
+                HexTile candidata = grid.ObtenerCasilla(x, y);  //en la casilla en la que estamos gaurdamos su referencia
+
+                //que la casilla exista, que sea transitable y que esté libre (el ultimo caso devuelve true si no esta ocupada)
+                if (candidata != null && candidata.esTransitable && !movimiento.EstaOcupada(candidata))
+                {
+                    disponibles.Add(candidata);  //la añadimos a la lista
+                }
+            }
+        }
+
+        Debug.Log($"Casillas disponibles para monedas: {disponibles.Count}");
+
+        //si la lista esta vacia no hay ninguna casilla disponible, no deberia de pasar tho
+        if (disponibles.Count == 0)
+        {
+            Debug.LogWarning("No hay casillas disponibles para colocar la moneda.");
             return;
         }
 
-        if (!casilla.esTransitable || movimiento.EstaOcupada(casilla))  //si no se puede pasar o ya hay alguien ahí 
-        {
-            Debug.LogWarning("La casilla no esta disponible para una moneda.");
-            return;  //salimos porque no se puede poner la moneda en una casilla que no es accesible
-        }
+        //aleatoriamente seleccionamos una casilla disponible de la lista
+        int indice = Random.Range(0, disponibles.Count);
+        HexTile casilla = disponibles[indice];  //guardamos en casilla la casilla de la lista disponible seleccionada
 
-        moneda.transform.position = casilla.transform.position; //si no entra a ningún if, ponemos el objeto moneda en la casilla
+        //crea una copia del prefab moneda y guarda la referencia de esa copia en monedacreada
+        monedaCreada = Instantiate(moneda);
 
-        casillaMoneda = casilla; //donde este la moneda asignamos esa casilla a casillamoneda
+        //mueve la copia a la posición de la casilla seleccionada con el range
+        monedaCreada.transform.position = casilla.transform.position;
+
+        casillaMoneda = casilla; //donde este la moneda asignamos esa casilla a casillamoneda, para guardar su referencia
     }
 
     //recibe el dato de la casilla en la que se esta para ver si es casillamoneda y también el tipo de unidad (si jugador o IA)
@@ -55,7 +81,7 @@ public class GestorMonedas: MonoBehaviour
 
         if (casillaDestino == casillaMoneda)  //si hay una moneda en esa casilla
         {
-            moneda.SetActive(false);  //desactivamos el gameobject de moneda
+            Destroy(monedaCreada);  //eliminamos el gameobject de la moneda creada en base al prefab
             casillaMoneda = null;  //actualizamos casillamoneda porque ya no habrá una moneda en esa casilla
 
             //la moneda del mapa da 3 monedas 

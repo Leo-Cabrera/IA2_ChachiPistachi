@@ -62,11 +62,13 @@ public class ControlUnidades : MonoBehaviour
             ActualizarTextoPuntos();
 
             Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            RaycastHit2D impacto = Physics2D.Raycast(posicionMouse, Vector2.zero);
+            // Una unidad y la casilla pueden tener colliders superpuestos.
+            // Revisa todos los impactos y prioriza seleccionar una unidad.
+            Collider2D[] impactos = Physics2D.OverlapPointAll(posicionMouse);
 
-            if (impacto.collider != null)
+            foreach (Collider2D impacto in impactos)
             {
-                UnidadHex unidad = impacto.collider.GetComponent<UnidadHex>();
+                UnidadHex unidad = impacto.GetComponentInParent<UnidadHex>();
 
                 if (unidad != null && unidad.esJugador && !unidad.yaSeHaMovido)
                 {
@@ -74,12 +76,18 @@ public class ControlUnidades : MonoBehaviour
                     MostrarCasillasMovimiento(unidad);
                     return;
                 }
+            }
 
-                HexTile casilla = impacto.collider.GetComponent<HexTile>();
-
-                if (casilla != null && unidadSeleccionada)
+            // Si no se pulsó una tropa seleccionable, usa el impacto con una
+            // casilla alcanzable como destino de movimiento.
+            if (unidadSeleccionada && unidadActual != null)
+            {
+                foreach (Collider2D impacto in impactos)
                 {
-                    if (casillasAlcanzables != null && casillasAlcanzables.ContainsKey(casilla))
+                    HexTile casilla = impacto.GetComponentInParent<HexTile>();
+
+                    if (casilla != null && casillasAlcanzables != null &&
+                        casillasAlcanzables.ContainsKey(casilla))
                     {
                         movimientoEnCurso = true;
                         unidadActual.yaSeHaMovido = true;
@@ -89,6 +97,7 @@ public class ControlUnidades : MonoBehaviour
 
                         unidadSeleccionada = false;
                         LimpiarPuntosMovimiento();
+                        return;
                     }
                 }
             }

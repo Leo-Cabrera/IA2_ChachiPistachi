@@ -15,7 +15,7 @@ public class PesosTerreno : MonoBehaviour
         {
             case TipoTropa.Happiny:
             case TipoTropa.Timbur:
-                return terreno == TipoTerreno.Agua ? 0 : 1;
+                return 1;
 
             case TipoTropa.Oshawott:
                 switch (terreno)

@@ -93,6 +93,7 @@ public class ControlUnidades : MonoBehaviour
                         unidadActual.yaSeHaMovido = true;
                         unidadActual.puntosMovimientoRestantes = 0;
                         unidadesAliadasReiniciadas = false;
+                        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
                         StartCoroutine(MoverUnidad(unidadActual, casilla));
 
                         unidadSeleccionada = false;
@@ -145,7 +146,12 @@ public class ControlUnidades : MonoBehaviour
 
         MovimientoHex movimiento = GetComponent<MovimientoHex>();
 
+        if (unidadActual != null)
+        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
+
         unidadActual = unidad;
+
+        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(true);
 
         ActualizarTextoPuntos();
 
@@ -194,6 +200,9 @@ public class ControlUnidades : MonoBehaviour
         unidad.coordenadaX = destino.coordenadaX;
         unidad.coordenadaY = destino.coordenadaY;
 
+        if (unidad.puntosMovimientoRestantes <= 0)
+            ActualizarColorUnidad(unidad);
+
         GetComponent<MapaInfluencia>()?.CalcularMapaInfluencia();
 
         if (gestorMonedas != null)
@@ -230,6 +239,8 @@ public class ControlUnidades : MonoBehaviour
 
         esTurnoJugador = false;
         unidadSeleccionada = false;
+        if (unidadActual != null)
+            unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
         LimpiarPuntosMovimiento();
 
         StartCoroutine(TurnoEnemigo());
@@ -332,6 +343,8 @@ public class ControlUnidades : MonoBehaviour
             unidad.puntosMovimientoMaximos = presupuesto;
             unidad.puntosMovimientoRestantes = presupuesto;
             unidad.yaSeHaMovido = false;
+
+            ActualizarColorUnidad(unidad);
         }
 
         unidadesAliadasReiniciadas = true;
@@ -351,8 +364,19 @@ public class ControlUnidades : MonoBehaviour
             unidad.puntosMovimientoMaximos = presupuesto;
             unidad.puntosMovimientoRestantes = presupuesto;
             unidad.yaSeHaMovido = false;
+
+            ActualizarColorUnidad(unidad);
         }
 
         unidadesEnemigasReiniciadas = true;
+    }
+
+    void ActualizarColorUnidad(UnidadHex unidad)
+    {
+        SpriteRenderer sr = unidad.GetComponentInChildren<SpriteRenderer>();
+
+        if (sr == null) return;
+
+        sr.color = unidad.yaSeHaMovido ? Color.gray : Color.white;
     }
 }

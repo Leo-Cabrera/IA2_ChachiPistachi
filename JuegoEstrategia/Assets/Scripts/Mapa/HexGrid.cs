@@ -35,8 +35,8 @@ public class HexGrid : MonoBehaviour
 
 
     [Header("Generación por zonas")]
-    public int numeroZonas = 8;
-    public int radioZona = 2;
+    public int numeroZonas = 20;
+    public int radioZona = 1;
 
     [System.Serializable]
     public class ZonaTerreno

@@ -22,8 +22,8 @@ public class PesosTerreno : MonoBehaviour
                 {
                     case TipoTerreno.Agua: return 2;
                     case TipoTerreno.Tierra: return 1;
-                    case TipoTerreno.Planta: return 1;
-                    case TipoTerreno.Fuego: return 0;
+                    case TipoTerreno.Planta: return 0;
+                    case TipoTerreno.Fuego: return 1;
                 }
                 break;
 

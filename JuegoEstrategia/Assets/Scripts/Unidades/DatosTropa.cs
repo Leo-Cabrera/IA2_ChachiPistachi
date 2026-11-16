@@ -17,5 +17,5 @@ public enum TipoTropa
     Timbur,
     Oshawott,
     Fennekin,
-    Turwig
+    Turtwig
 }

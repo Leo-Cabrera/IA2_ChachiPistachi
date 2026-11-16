@@ -17,7 +17,7 @@ public class GestorMonedas: MonoBehaviour
 
     public void ColocarMoneda()
     {
-        //para comprobar que hemos asignaddo cosas en el inspector antes de continuar
+        //para comprobar que hemos asignado cosas en el inspector antes de continuar
         if (grid == null || movimiento == null || moneda == null)
         {
             Debug.LogError("Faltan referencias en GestorMonedas.");
@@ -25,7 +25,7 @@ public class GestorMonedas: MonoBehaviour
         }
 
         //guardamos un objeto tile en casilla, nos guardamos la casilla en columna y fila que elijamos
-        HexTile casilla = grid.ObtenerCasilla(columna, fila);  
+        HexTile casilla = grid.ObtenerCasilla(columna, fila);
 
         if (casilla == null)  //si las coordenadas no existen aunque es poco probable que pase
         {
@@ -33,18 +33,20 @@ public class GestorMonedas: MonoBehaviour
             return;
         }
 
-        if (!casilla.esTransitable || movimiento.EstaOcupada(casilla))  //si no se puede pasar o ya hay alguien ahí 
+        // null = no ignorar ninguna unidad, comprobar todas
+        if (!casilla.esTransitable || movimiento.EstaOcupada(casilla, null))  //si no se puede pasar o ya hay alguien ahÃ­
         {
             Debug.LogWarning("La casilla no esta disponible para una moneda.");
             return;  //salimos porque no se puede poner la moneda en una casilla que no es accesible
         }
 
-        moneda.transform.position = casilla.transform.position; //si no entra a ningún if, ponemos el objeto moneda en la casilla
+        moneda.transform.position = casilla.transform.position; //si no entra a ningÃºn if, ponemos el objeto moneda en la casilla
 
         casillaMoneda = casilla; //donde este la moneda asignamos esa casilla a casillamoneda
     }
 
-    //recibe el dato de la casilla en la que se esta para ver si es casillamoneda y también el tipo de unidad (si jugador o IA)
+
+    //recibe el dato de la casilla en la que se esta para ver si es casillamoneda y tambiï¿½n el tipo de unidad (si jugador o IA)
     public void RecogerMoneda(HexTile casillaDestino, UnidadHex unidad)  
     {
         
@@ -56,7 +58,7 @@ public class GestorMonedas: MonoBehaviour
         if (casillaDestino == casillaMoneda)  //si hay una moneda en esa casilla
         {
             moneda.SetActive(false);  //desactivamos el gameobject de moneda
-            casillaMoneda = null;  //actualizamos casillamoneda porque ya no habrá una moneda en esa casilla
+            casillaMoneda = null;  //actualizamos casillamoneda porque ya no habrï¿½ una moneda en esa casilla
 
             //la moneda del mapa da 3 monedas 
             if (unidad.esJugador == true)  //si quien ha cogido la moneda es una unidad del jugador, ya usamos el esjugador en unidadhex

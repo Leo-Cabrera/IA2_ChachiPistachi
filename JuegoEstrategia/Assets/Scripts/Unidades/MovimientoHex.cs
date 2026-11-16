@@ -1,14 +1,11 @@
-
 using UnityEngine;
 using System.Collections.Generic;
 
 public class MovimientoHex : MonoBehaviour
 {
     public HexGrid grid;
-
     public PesosTerreno pesosTerreno;
 
-    // Devuelve las casillas vecinas de una casilla
     public List<HexTile> ObtenerVecinas(HexTile casilla)
     {
         List<HexTile> vecinas = new List<HexTile>();
@@ -16,76 +13,56 @@ public class MovimientoHex : MonoBehaviour
         int x = casilla.coordenadaX;
         int y = casilla.coordenadaY;
 
-        // Desplazamientos para columnas pares
-        Vector2Int[] desplazamientosPares ={new Vector2Int(1, 0),new Vector2Int(1, -1),new Vector2Int(0, -1),new Vector2Int(-1, -1),new Vector2Int(-1, 0),new Vector2Int(0, 1)};
+        Vector2Int[] desplazamientosPares = { new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, -1), new Vector2Int(-1, -1), new Vector2Int(-1, 0), new Vector2Int(0, 1) };
+        Vector2Int[] desplazamientosImpares = { new Vector2Int(1, 1), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, 1) };
 
-        // Desplazamientos para columnas impares
-        Vector2Int[] desplazamientosImpares ={new Vector2Int(1, 1),new Vector2Int(1, 0),new Vector2Int(0, -1), new Vector2Int(-1, 0),new Vector2Int(-1, 1), new Vector2Int(0, 1)};
-
-        Vector2Int[] desplazamientos =(x % 2 == 0) ? desplazamientosPares : desplazamientosImpares;
+        Vector2Int[] desplazamientos = (x % 2 == 0) ? desplazamientosPares : desplazamientosImpares;
 
         foreach (Vector2Int desplazamiento in desplazamientos)
         {
-            int nuevoX = x + desplazamiento.x;
-            int nuevoY = y + desplazamiento.y;
-
-            HexTile vecina = grid.ObtenerCasilla(nuevoX, nuevoY);
-
-            if (vecina != null)
-            {
-                vecinas.Add(vecina);
-            }
+            HexTile vecina = grid.ObtenerCasilla(x + desplazamiento.x, y + desplazamiento.y);
+            if (vecina != null) vecinas.Add(vecina);
         }
 
         return vecinas;
     }
 
-
-    
-    public Dictionary<HexTile, float> CalcularCasillasAlcanzables(UnidadHex unidad)
+    // El presupuesto se pasa explícitamente: no depende de puntosMovimientoRestantes
+    public Dictionary<HexTile, float> CalcularCasillasAlcanzables(UnidadHex unidad, float presupuesto)
     {
         Dictionary<HexTile, float> alcanzables = new Dictionary<HexTile, float>();
-        Queue<HexTile> pendientes = new Queue<HexTile>();
+        List<HexTile> pendientes = new List<HexTile>();
 
         HexTile inicio = grid.ObtenerCasilla(unidad.coordenadaX, unidad.coordenadaY);
+        if (inicio == null) return alcanzables;
+        if (presupuesto <= 0) return alcanzables;
 
-        if (inicio == null)
-            return alcanzables;
-
-        int alcance = pesosTerreno.ObtenerPeso(unidad.datosTropa, inicio.tipoTerreno);
-
-        Debug.Log("Tropa: " + unidad.datosTropa.nombreTropa +" | Nivel: " + unidad.datosTropa.nivel +" | Terreno inicial: " + inicio.tipoTerreno +" | Influencia: " + alcance);
-
-        if (alcance <= 0)
-            return alcanzables;
-
-        alcanzables[inicio] = 0;
-        pendientes.Enqueue(inicio);
+        alcanzables[inicio] = 0f;
+        pendientes.Add(inicio);
 
         while (pendientes.Count > 0)
         {
-            HexTile actual = pendientes.Dequeue();
-            int distancia = Mathf.CeilToInt(alcanzables[actual]);
+            HexTile actual = pendientes[0];
+            foreach (HexTile c in pendientes)
+                if (alcanzables[c] < alcanzables[actual]) actual = c;
 
-            if (distancia >= alcance)
-                continue;
+            pendientes.Remove(actual);
 
             foreach (HexTile vecina in ObtenerVecinas(actual))
             {
-                if (!vecina.esTransitable || EstaOcupada(vecina, unidad))
-                    continue;
+                if (!vecina.esTransitable) continue;
+                if (EstaOcupada(vecina, unidad)) continue;
 
-                int influenciaVecina = pesosTerreno.ObtenerPeso(unidad.datosTropa, vecina.tipoTerreno);
+                int coste = pesosTerreno.ObtenerCoste(unidad.datosTropa, vecina.tipoTerreno);
+                if (coste <= 0) continue;
 
-                if (influenciaVecina <= 0)
-                    continue;
+                float nuevoCoste = alcanzables[actual] + coste;
+                if (nuevoCoste > presupuesto) continue;
 
-                int nuevaDistancia = distancia + 1;
-
-                if (!alcanzables.ContainsKey(vecina) || nuevaDistancia < alcanzables[vecina])
+                if (!alcanzables.ContainsKey(vecina) || nuevoCoste < alcanzables[vecina])
                 {
-                    alcanzables[vecina] = nuevaDistancia;
-                    pendientes.Enqueue(vecina);
+                    alcanzables[vecina] = nuevoCoste;
+                    if (!pendientes.Contains(vecina)) pendientes.Add(vecina);
                 }
             }
         }
@@ -99,22 +76,7 @@ public class MovimientoHex : MonoBehaviour
 
         foreach (UnidadHex unidad in unidades)
         {
-            if (unidad == unidadActual)
-                continue;
-
-            if (unidad.coordenadaX == casilla.coordenadaX && unidad.coordenadaY == casilla.coordenadaY)
-                return true;
-        }
-
-        return false;
-    }
-
-    public bool EstaOcupada(HexTile casilla)
-    {
-        UnidadHex[] unidades = FindObjectsOfType<UnidadHex>();
-
-        foreach (UnidadHex unidad in unidades)
-        {
+            if (unidad == unidadActual) continue;
             if (unidad.coordenadaX == casilla.coordenadaX && unidad.coordenadaY == casilla.coordenadaY)
                 return true;
         }
@@ -130,79 +92,55 @@ public class MovimientoHex : MonoBehaviour
         Dictionary<HexTile, float> g = new Dictionary<HexTile, float>();
         Dictionary<HexTile, HexTile> padre = new Dictionary<HexTile, HexTile>();
 
-        // comprobación de seguridad: si inicio o destino son null, devuelve lista vacía
-        if (inicio == null || destino == null) {
-            return new List<HexTile>();
-        }
+        if (inicio == null || destino == null) return new List<HexTile>();
 
         g[inicio] = 0f;
         abierta.Add(inicio);
 
-        int exploradas = 0;
-
         while (abierta.Count > 0)
         {
-            // 1. encontrar en abierta la casilla con menor f
             HexTile actual = abierta[0];
             float mejorF = CalcularF(actual, destino, g);
 
-            foreach (HexTile casilla in abierta) {
+            foreach (HexTile casilla in abierta)
+            {
                 float f = CalcularF(casilla, destino, g);
-                if (f < mejorF)
-                {
-                    mejorF = f;
-                    actual = casilla;
-                }
-            }
-            // 2. si es el destino -> return ReconstruirRuta(padre, destino)
-
-            if (actual == destino) {
-                Debug.Log("Casillas exploradas: " + exploradas);
-
-                return ReconstruirRuta(padre, destino);
+                if (f < mejorF) { mejorF = f; actual = casilla; }
             }
 
-            // 3. quitarla de abierta, añadirla a cerrada
+            if (actual == destino)
+            {
+
+                List<HexTile> resultado =
+                    ReconstruirRuta(padre, inicio, destino);
+
+                return resultado;
+            }
 
             abierta.Remove(actual);
-            exploradas++;
             cerrada.Add(actual);
 
-            // 4. recorrer ObtenerVecinas(actual) y aplicar los filtros y la mejora
-
-            List<HexTile> vecinas = ObtenerVecinas(actual);
-
-            foreach (HexTile vecina in vecinas)
+            foreach (HexTile vecina in ObtenerVecinas(actual))
             {
-                if (cerrada.Contains(vecina))
-                    continue;
+                if (cerrada.Contains(vecina)) continue;
+                if (!vecina.esTransitable) continue;
+                if (EstaOcupada(vecina, unidad)) continue;
 
-                if (!vecina.esTransitable)
-                    continue;
+                int coste = pesosTerreno.ObtenerCoste(unidad.datosTropa, vecina.tipoTerreno);
+                if (coste <= 0) continue;
 
-                if (EstaOcupada(vecina, unidad))
-                    continue;
+                float gTentativo = g[actual] + coste;
 
-                int peso = pesosTerreno.ObtenerPeso(unidad.datosTropa, vecina.tipoTerreno);
-                if (peso == 0) continue;
-                float costePaso = peso;
-                float gTentativo = g[actual] + costePaso;
-
-                if (g.ContainsKey(vecina) && gTentativo >= g[vecina])
-                    continue;
+                if (g.ContainsKey(vecina) && gTentativo >= g[vecina]) continue;
 
                 padre[vecina] = actual;
                 g[vecina] = gTentativo;
 
-                if (!abierta.Contains(vecina))
-                    abierta.Add(vecina);
+                if (!abierta.Contains(vecina)) abierta.Add(vecina);
             }
-
         }
 
-         Debug.Log("Casillas exploradas: " + exploradas);
-
-        return new List<HexTile>();  // sin ruta
+        return new List<HexTile>(); 
     }
 
     private float CalcularF(HexTile casilla, HexTile destino, Dictionary<HexTile, float> g)
@@ -210,7 +148,8 @@ public class MovimientoHex : MonoBehaviour
         return g[casilla] + Heuristica(casilla, destino);
     }
 
-    private float Heuristica(HexTile a, HexTile b)
+    // public: EvaluadorTactico también la usa
+    public float Heuristica(HexTile a, HexTile b)
     {
         int aq = a.coordenadaX;
         int ar = a.coordenadaY - (a.coordenadaX - (a.coordenadaX & 1)) / 2;
@@ -223,34 +162,34 @@ public class MovimientoHex : MonoBehaviour
 
         int distancia = (Mathf.Abs(aq - bq) + Mathf.Abs(ar - br) + Mathf.Abs(as_ - bs)) / 2;
 
-        return distancia * 1f;  // coste mínimo por paso
-
-        // return 0f;
+        return distancia * 1f;
     }
 
-
-    private List<HexTile> ReconstruirRuta(Dictionary<HexTile, HexTile> padre, HexTile destino)
+    private List<HexTile> ReconstruirRuta(
+    Dictionary<HexTile, HexTile> padre,
+    HexTile inicio,
+    HexTile destino)
     {
         List<HexTile> ruta = new List<HexTile>();
         HexTile actual = destino;
 
-        while (actual != null)
+        while (actual != inicio)
         {
             ruta.Add(actual);
 
             if (!padre.ContainsKey(actual))
             {
-                break;
+                return new List<HexTile>();
             }
 
             actual = padre[actual];
         }
 
+        // Añadimos el inicio, que no tiene padre.
+        ruta.Add(inicio);
+
         ruta.Reverse();
+
         return ruta;
     }
-
-
-
-
 }

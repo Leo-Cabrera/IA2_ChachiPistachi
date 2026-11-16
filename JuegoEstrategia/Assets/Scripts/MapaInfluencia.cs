@@ -56,23 +56,22 @@ public class MapaInfluencia : MonoBehaviour
         if (unidad == null || unidad.datosTropa == null) return;
 
         HexTile inicio = movimiento.grid.ObtenerCasilla(unidad.coordenadaX, unidad.coordenadaY);
-
         if (inicio == null) return;
 
-        int alcance = movimiento.pesosTerreno.ObtenerPeso(unidad.datosTropa, inicio.tipoTerreno);
+        int presupuesto = movimiento.pesosTerreno.ObtenerPresupuesto(unidad.datosTropa);
+        if (presupuesto <= 0) return;
 
-        if (alcance <= 0) return;
-
-        Dictionary<HexTile, float> alcanzables = movimiento.CalcularCasillasAlcanzables(unidad);
+        Dictionary<HexTile, float> alcanzables =
+            movimiento.CalcularCasillasAlcanzables(unidad, presupuesto);
 
         foreach (var elemento in alcanzables)
         {
             HexTile casilla = elemento.Key;
-            float distancia = elemento.Value;
+            float coste = elemento.Value;
 
-            float influencia = alcance * Mathf.Exp(-distancia * decay);
+            float influencia = presupuesto * Mathf.Exp(-coste * decay);
 
-            //if (influencia <= 0) continue;
+            if (influencia <= 0.001f) continue;
 
             if (!mapaDestino.ContainsKey(casilla))
                 mapaDestino[casilla] = 0;
@@ -80,6 +79,8 @@ public class MapaInfluencia : MonoBehaviour
             mapaDestino[casilla] += influencia;
         }
     }
+
+
 
     void OnDrawGizmos()
     {

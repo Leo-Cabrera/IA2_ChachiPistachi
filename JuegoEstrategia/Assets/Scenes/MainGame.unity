@@ -1057,7 +1057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fbe84960fecfc24580a0286ae219c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DatosTropa
-  nombreTropa: 
+  nombreTropa: Fennekin
   tipoTropa: 3
   nivel: 0
 --- !u!58 &916484314
@@ -1096,6 +1096,17 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.6
+--- !u!114 &916484315 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3778943304033310939, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
+  m_PrefabInstance: {fileID: 8034130202726779520}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916484309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4ba650b5104bf459e95adbfcaa213f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnidadHex
 --- !u!1 &970767230
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,6 +1718,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1697715947
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1697715949}
+  - component: {fileID: 1697715948}
+  m_Layer: 0
+  m_Name: EvaluadorTactico
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1697715948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697715947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48460f6de484794ba6f51ca07db579d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EvaluadorTactico
+  grid: {fileID: 1393154646}
+  movimiento: {fileID: 1956697601}
+  pesoDistancia: 0.2
+  pesoCoste: 1
+  pesoPeligro: 0.3
+  pesoVentajaTerreno: 1
+  pesoTerrenoObjetivo: 0.5
+  debugCostes: 0
+--- !u!4 &1697715949
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697715947}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1753579301
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1882,6 +1945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7dfb38b062d3d84591658647628b0c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlUnidades
+  evaluador: {fileID: 1697715948}
   grid: {fileID: 1393154646}
   tropasJugador:
   - {fileID: 772097255}
@@ -1889,7 +1953,8 @@ MonoBehaviour:
   - {fileID: 1672616481}
   - {fileID: 513722314}
   - {fileID: 1562502936}
-  tropasEnemigas: []
+  tropasEnemigas:
+  - {fileID: 916484315}
   prefabPuntoMovimiento: {fileID: 4068465308711417416, guid: e61d956a7a6d6c74f81b78cade51a7e8, type: 3}
   textoPuntosMovimiento: {fileID: 192775755}
   gestorMonedas: {fileID: 970767231}
@@ -2092,3 +2157,4 @@ SceneRoots:
   - {fileID: 1951993122}
   - {fileID: 351090581}
   - {fileID: 1753579301}
+  - {fileID: 1697715949}

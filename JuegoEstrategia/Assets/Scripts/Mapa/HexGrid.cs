@@ -122,7 +122,8 @@ public class HexGrid : MonoBehaviour
                 hexTile.idZonaTerreno = zona.id;
 
                 // Configura el terreno y su sprite
-                hexTile.ConfigurarTerreno(zona.tipo, ObtenerSprite(zona.tipo));
+                TipoTerreno terreno = ObtenerTerrenoAleatorio();
+                hexTile.ConfigurarTerreno(terreno, ObtenerSprite(terreno));
 
                 // Guarda la referencia a la casilla en la matriz
                 casillas[x, y] = hexTile;

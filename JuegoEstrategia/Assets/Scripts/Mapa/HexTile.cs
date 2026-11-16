@@ -10,6 +10,9 @@ public class HexTile : MonoBehaviour
     public TipoTerreno tipoTerreno;
     public bool esTransitable = true;
 
+    //guarda la moneda que hay en esta casilla
+    public GameObject monedaEnCasilla;
+
     [Header("Movimiento")]
     public float costeMovimiento = 1f;
 

@@ -1027,9 +1027,9 @@ MonoBehaviour:
   moneda: {fileID: 7902657826871300533, guid: 595ff74251dae484291bcb9fbba8c8a5, type: 3}
   monedasJugador: 0
   monedasIA: 0
-  columnaMinima: 8
-  columnaMaxima: 19
-  filaMinima: 9
+  columnaMinima: 3
+  columnaMaxima: 24
+  filaMinima: 4
   filaMaxima: 11
   monedasPorTanda: 5
 --- !u!4 &970767232

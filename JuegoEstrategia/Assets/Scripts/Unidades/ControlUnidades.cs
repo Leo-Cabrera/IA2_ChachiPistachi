@@ -122,6 +122,8 @@ public class ControlUnidades : MonoBehaviour
 
         foreach (UnidadHex unidad in tropasEnemigas)
             ColocarUnidad(unidad);
+
+        GetComponent<MapaInfluencia>()?.CalcularMapaInfluencia();
     }
 
     void ColocarUnidad(UnidadHex unidad)
@@ -242,6 +244,8 @@ public class ControlUnidades : MonoBehaviour
 
         unidad.coordenadaX = destino.coordenadaX;
         unidad.coordenadaY = destino.coordenadaY;
+
+        GetComponent<MapaInfluencia>()?.CalcularMapaInfluencia();
 
         //una vez ya llega a la posicion, comprueba si la casilla de destino tiene una moneda
         if (gestorMonedas != null)  //si el campo de controlunidades que tiene gestormonedas tiene algo asignado

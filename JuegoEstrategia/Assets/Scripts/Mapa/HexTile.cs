@@ -10,14 +10,15 @@ public class HexTile : MonoBehaviour
     public TipoTerreno tipoTerreno;
     public bool esTransitable = true;
 
+    //guarda la moneda que hay en esta casilla
+    public GameObject monedaEnCasilla;
+
     [Header("Movimiento")]
     public float costeMovimiento = 1f;
 
 
     [Header("Visual")]
     [SerializeField] private SpriteRenderer spriteRenderer;
-
-    public int idZonaTerreno;
 
     public void ConfigurarTerreno(TipoTerreno tipo, Sprite sprite)
     {
@@ -57,8 +58,8 @@ public class HexTile : MonoBehaviour
                 break;
 
             case TipoTerreno.Agua:
-                esTransitable = true;
-                costeMovimiento = 1f;
+                esTransitable = false;
+                costeMovimiento = 999f;
                 break;
         }
     }

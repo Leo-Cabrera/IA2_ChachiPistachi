@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using System.Collections.Generic;
 
 public class HexGrid : MonoBehaviour
 {
@@ -31,6 +32,22 @@ public class HexGrid : MonoBehaviour
     public Sprite spriteFuego;
     public Sprite spriteTierra;
     public Sprite spriteAgua;
+
+
+    [Header("Generación por zonas")]
+    public int numeroZonas = 20;
+    public int radioZona = 1;
+
+    [System.Serializable]
+    public class ZonaTerreno
+    {
+        public int id;
+        public TipoTerreno tipo;
+        public int centroX;
+        public int centroY;
+    }
+
+    private List<ZonaTerreno> zonas = new List<ZonaTerreno>();
 
     void Start()
     {
@@ -64,6 +81,8 @@ public class HexGrid : MonoBehaviour
         // Prepara una matriz para guardar cada casilla por sus coordenadas
         casillas = new HexTile[ancho, alto];
 
+        CrearZonas();
+
         // Recorre todas las columnas
         for (int x = 0; x < ancho; x++)
         {
@@ -96,11 +115,14 @@ public class HexGrid : MonoBehaviour
                 hexTile.coordenadaX = x;
                 hexTile.coordenadaY = y;
 
-                 // Elige aleatoriamente el tipo de terreno
-                TipoTerreno terreno = ObtenerTerrenoAleatorio();
+                 // Obtiene la zona correspondiente a esta posición
+                ZonaTerreno zona = ObtenerZonaPorPosicion(x, y);
 
-                // Configura las estadisticas de la casilla y le pasa el sprite adecuado
-                hexTile.ConfigurarTerreno(terreno, ObtenerSprite(terreno));
+                // Guarda el identificador de la zona
+                hexTile.idZonaTerreno = zona.id;
+
+                // Configura el terreno y su sprite
+                hexTile.ConfigurarTerreno(zona.tipo, ObtenerSprite(zona.tipo));
 
                 // Guarda la referencia a la casilla en la matriz
                 casillas[x, y] = hexTile;
@@ -201,5 +223,52 @@ public class HexGrid : MonoBehaviour
         return casillas;
     }
 
+    void CrearZonas()
+    {
+        zonas.Clear();
+
+        TipoTerreno[] terrenos ={ TipoTerreno.Tierra, TipoTerreno.Planta, TipoTerreno.Fuego, TipoTerreno.Agua };
+
+        for (int i = 0; i < numeroZonas; i++)
+        {
+            int x = Random.Range(0, ancho);
+            int y = Random.Range(0, alto);
+
+            TipoTerreno tipo = terrenos[i % terrenos.Length];
+
+            ZonaTerreno zona = new ZonaTerreno();
+            zona.id = i;
+            zona.tipo = tipo;
+            zona.centroX = x;
+            zona.centroY = y;
+
+
+            zonas.Add(zona);
+        }
+    }
+
+    ZonaTerreno ObtenerZonaPorPosicion(int x, int y)
+    {
+        ZonaTerreno zonaCercana = null;
+        float menorDistancia = float.MaxValue;
+
+        foreach (ZonaTerreno zona in zonas)
+        {
+            float distancia = Vector2.Distance(
+                new Vector2(x, y),
+                new Vector2(zona.centroX, zona.centroY)
+            );
+
+            //distancia += Random.Range(-0.8f, 0.8f);
+
+            if (distancia < menorDistancia)
+            {
+                menorDistancia = distancia;
+                zonaCercana = zona;
+            }
+        }
+
+        return zonaCercana;
+    }
 
 }

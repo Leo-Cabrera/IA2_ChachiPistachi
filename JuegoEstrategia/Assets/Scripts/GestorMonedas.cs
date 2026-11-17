@@ -40,7 +40,7 @@ public class GestorMonedas: MonoBehaviour
                 HexTile candidata = grid.ObtenerCasilla(x, y);  //en la casilla en la que estamos gaurdamos su referencia
 
                 //que la casilla exista, que sea transitable y que esté libre (el ultimo caso devuelve true si no esta ocupada)
-                if (candidata != null && candidata.esTransitable && !movimiento.EstaOcupada(candidata))
+                if (candidata != null && candidata.esTransitable && !movimiento.EstaOcupada(candidata, null))
                 {
                     disponibles.Add(candidata);  //la añadimos a la lista
                 }

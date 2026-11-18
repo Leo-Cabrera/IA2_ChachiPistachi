@@ -23,7 +23,7 @@ public class ControlUnidades : MonoBehaviour
     private Dictionary<HexTile, float> casillasAlcanzables;
     private UnidadHex unidadActual;
 
-    private bool movimientoEnCurso = false;
+    [HideInInspector] public bool movimientoEnCurso = false;
     private bool unidadSeleccionada = false;
     private bool unidadesAliadasReiniciadas = false;
     private bool unidadesEnemigasReiniciadas = false;
@@ -32,6 +32,8 @@ public class ControlUnidades : MonoBehaviour
     public TMPro.TextMeshProUGUI textoPuntosMovimiento;
 
     public GestorMonedas gestorMonedas;
+
+    private HashSet<GAgent> agentesPendientes = new HashSet<GAgent>();
 
     private void Awake()
     {
@@ -177,7 +179,7 @@ public class ControlUnidades : MonoBehaviour
         puntosMovimiento.Clear();
     }
 
-    IEnumerator MoverUnidad(UnidadHex unidad, HexTile destino)
+    public IEnumerator MoverUnidad(UnidadHex unidad, HexTile destino)
     {
         Vector3 posicionInicial = unidad.transform.position;
         Vector3 posicionFinal = destino.transform.position;
@@ -230,24 +232,23 @@ public class ControlUnidades : MonoBehaviour
         return costeTotal;
     }
 
-    private bool esTurnoJugador = true;
-    private bool turnoEnemigoEnCurso = false;
+    [HideInInspector] public bool esTurnoJugador = true;
+    [HideInInspector] public bool turnoEnemigoEnCurso = false;
 
     public void IniciarTurnoEnemigo()
     {
         if (turnoEnemigoEnCurso) return;
 
-        esTurnoJugador = false;
+        //esTurnoJugador = false;
         unidadSeleccionada = false;
         if (unidadActual != null)
             unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
         LimpiarPuntosMovimiento();
+        //StartCoroutine(TurnoEnemigo());
 
-        StartCoroutine(TurnoEnemigo());
-    }
 
-    IEnumerator TurnoEnemigo()
-    {
+        //Codigo modificado Leo 
+
         turnoEnemigoEnCurso = true;
 
         // Reinicio explícito aquí: no dependemos del Update
@@ -257,46 +258,109 @@ public class ControlUnidades : MonoBehaviour
         {
             turnoEnemigoEnCurso = false;
             TerminarTurnoEnemigo();
-            yield break;
+            return;
         }
+
+        esTurnoJugador = false;
+
+        List<GAgent> agentes = new List<GAgent>();
 
         foreach (UnidadHex enemigo in tropasEnemigas)
         {
             if (enemigo == null) continue;
 
-            if (enemigo.puntosMovimientoRestantes <= 0)
-            {
-                Debug.Log(enemigo.datosTropa.nombreTropa + " no tiene movimiento.");
-                continue;
-            }
+            GAgent agente = enemigo.GetComponent<GAgent>();
 
-            // El evaluador recibe TODOS los jugadores.
-            // Él decidirá a cuál conviene acercarse.
+            if (agente == null) continue;
 
-            List<HexTile> ruta = evaluador.ElegirRuta(
-                enemigo,
-                tropasJugador
-            );
-
-            if (ruta.Count <= 1)
-            {
-                Debug.Log(enemigo.datosTropa.nombreTropa + " se queda quieto.");
-                continue;
-            }
-
-            for (int i = 1; i < ruta.Count; i++)
-            {
-                movimientoEnCurso = true;
-                yield return StartCoroutine(MoverUnidad(enemigo, ruta[i]));
-            }
-
-            enemigo.puntosMovimientoRestantes = 0;
-            enemigo.yaSeHaMovido = true;
+            agentes.Add(agente);
+            agentesPendientes.Add(agente);
+            agente.OnTurnFinished += OnAgenteTurnFinished;
         }
 
-        turnoEnemigoEnCurso = false;
-        TerminarTurnoEnemigo();
+
+        if (agentesPendientes.Count == 0)
+        {
+            TerminarTurnoEnemigo();
+            return;
+        }
+
+        foreach (UnidadHex enemigo in tropasEnemigas)
+        {
+            GAgent agente = enemigo.GetComponent<GAgent>();
+            agente.StartTurn();
+        }
+        
+
     }
+    private void OnAgenteTurnFinished(GAgent agente)
+    {
+        if (agente == null) return;
+
+        
+        agente.OnTurnFinished -= OnAgenteTurnFinished;
+
+        agentesPendientes.Remove(agente);
+
+        // Comprobar si todos han terminado.
+        if (agentesPendientes.Count == 0)
+        {
+            
+            TerminarTurnoEnemigo();
+        }
+    }
+
+    //IEnumerator TurnoEnemigo()
+    //{
+    //turnoEnemigoEnCurso = true;
+
+    //// Reinicio explícito aquí: no dependemos del Update
+    //ReiniciarUnidadesEnemigas();
+
+    //if (tropasEnemigas.Count == 0 || tropasJugador.Count == 0)
+    //{
+    //    turnoEnemigoEnCurso = false;
+    //    TerminarTurnoEnemigo();
+    //    yield break;
+    //}
+
+    //foreach (UnidadHex enemigo in tropasEnemigas)
+    //{
+    //    if (enemigo == null) continue;
+
+    //    if (enemigo.puntosMovimientoRestantes <= 0)
+    //    {
+    //        Debug.Log(enemigo.datosTropa.nombreTropa + " no tiene movimiento.");
+    //        continue;
+    //    }
+
+    //    // El evaluador recibe TODOS los jugadores.
+    //    // Él decidirá a cuál conviene acercarse.
+
+    //    List<HexTile> ruta = evaluador.ElegirRuta(
+    //        enemigo,
+    //        tropasJugador
+    //    );
+
+    //    if (ruta.Count <= 1)
+    //    {
+    //        Debug.Log(enemigo.datosTropa.nombreTropa + " se queda quieto.");
+    //        continue;
+    //    }
+
+    //    for (int i = 1; i < ruta.Count; i++)
+    //    {
+    //        movimientoEnCurso = true;
+    //        yield return StartCoroutine(MoverUnidad(enemigo, ruta[i]));
+    //    }
+
+    //    enemigo.puntosMovimientoRestantes = 0;
+    //    enemigo.yaSeHaMovido = true;
+    //}
+
+    //turnoEnemigoEnCurso = false;
+    //TerminarTurnoEnemigo();
+    //}
 
     // Elige el jugador más cercano que esté en una casilla válida
     UnidadHex ElegirObjetivo(UnidadHex enemigo)
@@ -326,6 +390,8 @@ public class ControlUnidades : MonoBehaviour
 
     void TerminarTurnoEnemigo()
     {
+        if(!turnoEnemigoEnCurso) return;
+        turnoEnemigoEnCurso = false;
         esTurnoJugador = true;
         GameManager.instance.CambiarTurno();
     }

@@ -6,7 +6,7 @@ public abstract class GAction : MonoBehaviour
 {
     public string actionName = "Action";
     public float cost = 1.0f;
-    //public float duration = 0f;
+    public float duration = 0f;
     public WorldState[] preConditions;
     public WorldState[] afterEffects;
 
@@ -15,8 +15,11 @@ public abstract class GAction : MonoBehaviour
 
     public WorldStates agentBeliefs;
 
-    public bool running = false;
-    
+    [HideInInspector] public bool running = false;
+    [HideInInspector] public bool finished = false;
+    [HideInInspector] public bool goalSatisfied = false;
+    [HideInInspector] public UnidadHex unidad;
+
     public GAction()
     {
         preconditions = new Dictionary<string, int>();
@@ -39,6 +42,7 @@ public abstract class GAction : MonoBehaviour
                 effects.Add(w.key, w.value);
             }
         }
+        unidad = GetComponent<UnidadHex>();
     }
 
     public bool IsAchievable()
@@ -55,6 +59,8 @@ public abstract class GAction : MonoBehaviour
         }
         return true;
     }
+    
     public abstract bool PrePerform();
     public abstract bool PostPerform();
+    public abstract void IniciateAction();
 }

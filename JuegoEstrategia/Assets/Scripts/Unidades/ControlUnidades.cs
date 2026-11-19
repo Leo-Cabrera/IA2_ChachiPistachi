@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ public class ControlUnidades : MonoBehaviour
     private UnidadHex unidadActual;
 
     [HideInInspector] public bool movimientoEnCurso = false;
+
     private bool unidadSeleccionada = false;
     private bool unidadesAliadasReiniciadas = false;
     private bool unidadesEnemigasReiniciadas = false;
@@ -35,44 +37,59 @@ public class ControlUnidades : MonoBehaviour
 
     private HashSet<GAgent> agentesPendientes = new HashSet<GAgent>();
 
+    [HideInInspector] public bool esTurnoJugador = true;
+    [HideInInspector] public bool turnoEnemigoEnCurso = false;
+
     private void Awake()
     {
         instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         StartCoroutine(EsperarMapa());
     }
 
-    void Update()
+    private void Update()
     {
         if (!GameManager.instance.TurnoJugador())
         {
-            if (!unidadesAliadasReiniciadas) ReiniciarUnidadesAliadas();
+            if (!unidadesAliadasReiniciadas)
+                ReiniciarUnidadesAliadas();
         }
         else
         {
-            if (!unidadesEnemigasReiniciadas) ReiniciarUnidadesEnemigas();
+            if (!unidadesEnemigasReiniciadas)
+                ReiniciarUnidadesEnemigas();
         }
 
-        if (movimientoEnCurso) return;
-        if (!esTurnoJugador) return;
+        if (movimientoEnCurso)
+            return;
 
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        if (!esTurnoJugador)
+            return;
+
+        if (Mouse.current != null &&
+            Mouse.current.leftButton.wasPressedThisFrame)
         {
             ActualizarTextoPuntos();
 
-            Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            // Una unidad y la casilla pueden tener colliders superpuestos.
-            // Revisa todos los impactos y prioriza seleccionar una unidad.
-            Collider2D[] impactos = Physics2D.OverlapPointAll(posicionMouse);
+            Vector2 posicionMouse = Camera.main.ScreenToWorldPoint(
+                Mouse.current.position.ReadValue()
+            );
 
+            Collider2D[] impactos =
+                Physics2D.OverlapPointAll(posicionMouse);
+
+            // Primero comprobamos si se ha seleccionado una unidad.
             foreach (Collider2D impacto in impactos)
             {
-                UnidadHex unidad = impacto.GetComponentInParent<UnidadHex>();
+                UnidadHex unidad =
+                    impacto.GetComponentInParent<UnidadHex>();
 
-                if (unidad != null && unidad.esJugador && !unidad.yaSeHaMovido)
+                if (unidad != null &&
+                    unidad.esJugador &&
+                    !unidad.yaSeHaMovido)
                 {
                     unidadSeleccionada = true;
                     MostrarCasillasMovimiento(unidad);
@@ -80,26 +97,34 @@ public class ControlUnidades : MonoBehaviour
                 }
             }
 
-            // Si no se pulsó una tropa seleccionable, usa el impacto con una
-            // casilla alcanzable como destino de movimiento.
+            // Si no se ha seleccionado otra unidad,
+            // comprobamos si se ha pulsado una casilla alcanzable.
             if (unidadSeleccionada && unidadActual != null)
             {
                 foreach (Collider2D impacto in impactos)
                 {
-                    HexTile casilla = impacto.GetComponentInParent<HexTile>();
+                    HexTile casilla =
+                        impacto.GetComponentInParent<HexTile>();
 
-                    if (casilla != null && casillasAlcanzables != null &&
+                    if (casilla != null &&
+                        casillasAlcanzables != null &&
                         casillasAlcanzables.ContainsKey(casilla))
                     {
                         movimientoEnCurso = true;
+
                         unidadActual.yaSeHaMovido = true;
-                        unidadActual.puntosMovimientoRestantes = 0;
                         unidadesAliadasReiniciadas = false;
-                        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
-                        StartCoroutine(MoverUnidad(unidadActual, casilla));
+
+                        unidadActual.GetComponent<GlowUnidad>()
+                            ?.SetGlow(false);
+
+                        StartCoroutine(
+                            MoverUnidad(unidadActual, casilla)
+                        );
 
                         unidadSeleccionada = false;
                         LimpiarPuntosMovimiento();
+
                         return;
                     }
                 }
@@ -107,9 +132,11 @@ public class ControlUnidades : MonoBehaviour
         }
     }
 
-    IEnumerator EsperarMapa()
+    private IEnumerator EsperarMapa()
     {
-        yield return new WaitUntil(() => grid != null && grid.mapaCreado);
+        yield return new WaitUntil(
+            () => grid != null && grid.mapaCreado
+        );
 
         foreach (UnidadHex unidad in tropasJugador)
             ColocarUnidad(unidad);
@@ -120,10 +147,11 @@ public class ControlUnidades : MonoBehaviour
         ReiniciarUnidadesAliadas();
         ReiniciarUnidadesEnemigas();
 
-        GetComponent<MapaInfluencia>()?.CalcularMapaInfluencia();
+        GetComponent<MapaInfluencia>()
+            ?.CalcularMapaInfluencia();
     }
 
-    void ColocarUnidad(UnidadHex unidad)
+    private void ColocarUnidad(UnidadHex unidad)
     {
         if (unidad == null)
         {
@@ -131,47 +159,66 @@ public class ControlUnidades : MonoBehaviour
             return;
         }
 
-        HexTile casilla = grid.ObtenerCasilla(unidad.coordenadaX, unidad.coordenadaY);
+        HexTile casilla = grid.ObtenerCasilla(
+            unidad.coordenadaX,
+            unidad.coordenadaY
+        );
 
         if (casilla == null)
         {
-            Debug.LogError("No se ha encontrado la casilla de la unidad.");
+            Debug.LogError(
+                "No se ha encontrado la casilla de la unidad."
+            );
             return;
         }
 
         unidad.transform.position = casilla.transform.position;
     }
 
-    void MostrarCasillasMovimiento(UnidadHex unidad)
+    private void MostrarCasillasMovimiento(UnidadHex unidad)
     {
         LimpiarPuntosMovimiento();
 
         MovimientoHex movimiento = GetComponent<MovimientoHex>();
 
         if (unidadActual != null)
-        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
+        {
+            unidadActual.GetComponent<GlowUnidad>()
+                ?.SetGlow(false);
+        }
 
         unidadActual = unidad;
 
-        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(true);
+        unidadActual.GetComponent<GlowUnidad>()
+            ?.SetGlow(true);
 
         ActualizarTextoPuntos();
 
-        casillasAlcanzables = movimiento.CalcularCasillasAlcanzables(unidad, unidad.puntosMovimientoRestantes);
+        casillasAlcanzables =
+            movimiento.CalcularCasillasAlcanzables(
+                unidad,
+                unidad.puntosMovimientoRestantes
+            );
 
         foreach (var elemento in casillasAlcanzables)
         {
             HexTile casilla = elemento.Key;
 
-            if (casilla.coordenadaX == unidad.coordenadaX && casilla.coordenadaY == unidad.coordenadaY)
+            if (casilla.coordenadaX == unidad.coordenadaX &&
+                casilla.coordenadaY == unidad.coordenadaY)
                 continue;
 
-            GameObject punto = Instantiate(prefabPuntoMovimiento, casilla.transform.position, Quaternion.identity);
+            GameObject punto = Instantiate(
+                prefabPuntoMovimiento,
+                casilla.transform.position,
+                Quaternion.identity
+            );
+
             puntosMovimiento.Add(punto);
         }
     }
 
-    void LimpiarPuntosMovimiento()
+    private void LimpiarPuntosMovimiento()
     {
         foreach (GameObject punto in puntosMovimiento)
             Destroy(punto);
@@ -179,8 +226,55 @@ public class ControlUnidades : MonoBehaviour
         puntosMovimiento.Clear();
     }
 
-    public IEnumerator MoverUnidad(UnidadHex unidad, HexTile destino)
+    // NUEVO: calcula el coste entero de entrar en una casilla.
+    // Como UnidadHex utiliza puntos de movimiento enteros,
+    // redondeamos hacia arriba los costes decimales.
+    public int ObtenerCosteMovimiento(
+        UnidadHex unidad,
+        HexTile destino)
     {
+        MovimientoHex movimiento = GetComponent<MovimientoHex>();
+
+        if (movimiento == null ||
+            movimiento.pesosTerreno == null ||
+            unidad == null ||
+            destino == null)
+            return int.MaxValue;
+
+        float coste = movimiento.pesosTerreno.ObtenerCoste(
+            unidad.datosTropa,
+            destino.tipoTerreno
+        );
+
+        if (coste <= 0)
+            return int.MaxValue;
+
+        return Mathf.Max(1, Mathf.CeilToInt(coste));
+    }
+
+    public IEnumerator MoverUnidad(
+        UnidadHex unidad,
+        HexTile destino)
+    {
+        if (unidad == null || destino == null)
+        {
+            movimientoEnCurso = false;
+            yield break;
+        }
+
+        // NUEVO: calculamos el coste antes de mover.
+        int costeMovimiento = ObtenerCosteMovimiento(
+            unidad,
+            destino
+        );
+
+        if (costeMovimiento == int.MaxValue ||
+            costeMovimiento > unidad.puntosMovimientoRestantes)
+        {
+            movimientoEnCurso = false;
+            yield break;
+        }
+
         Vector3 posicionInicial = unidad.transform.position;
         Vector3 posicionFinal = destino.transform.position;
 
@@ -190,9 +284,14 @@ public class ControlUnidades : MonoBehaviour
         while (tiempo < duracion)
         {
             tiempo += Time.deltaTime;
+
             float progreso = tiempo / duracion;
 
-            unidad.transform.position = Vector3.Lerp(posicionInicial, posicionFinal, progreso);
+            unidad.transform.position = Vector3.Lerp(
+                posicionInicial,
+                posicionFinal,
+                progreso
+            );
 
             yield return null;
         }
@@ -202,11 +301,21 @@ public class ControlUnidades : MonoBehaviour
         unidad.coordenadaX = destino.coordenadaX;
         unidad.coordenadaY = destino.coordenadaY;
 
+        // NUEVO: descontamos el coste real del terreno.
+        unidad.puntosMovimientoRestantes -= costeMovimiento;
+
+        unidad.puntosMovimientoRestantes = Mathf.Max(
+            0,
+            unidad.puntosMovimientoRestantes
+        );
+
         if (unidad.puntosMovimientoRestantes <= 0)
             ActualizarColorUnidad(unidad);
 
-        GetComponent<MapaInfluencia>()?.CalcularMapaInfluencia();
+        GetComponent<MapaInfluencia>()
+            ?.CalcularMapaInfluencia();
 
+        // Se conserva la recogida de monedas existente.
         if (gestorMonedas != null)
             gestorMonedas.RecogerMoneda(destino, unidad);
 
@@ -215,69 +324,67 @@ public class ControlUnidades : MonoBehaviour
         movimientoEnCurso = false;
     }
 
-    void ActualizarTextoPuntos()
+    private void ActualizarTextoPuntos()
     {
-        if (unidadActual != null && textoPuntosMovimiento != null)
-            textoPuntosMovimiento.text = "Puntos de movimiento: " + unidadActual.puntosMovimientoRestantes;
+        if (unidadActual != null &&
+            textoPuntosMovimiento != null)
+        {
+            textoPuntosMovimiento.text =
+                "Puntos de movimiento: " +
+                unidadActual.puntosMovimientoRestantes;
+        }
     }
-
-    float CalcularCosteRuta(List<HexTile> ruta, UnidadHex unidad)
-    {
-        float costeTotal = 0;
-        MovimientoHex movimiento = GetComponent<MovimientoHex>();
-
-        for (int i = 1; i < ruta.Count; i++)
-            costeTotal += movimiento.pesosTerreno.ObtenerCoste(unidad.datosTropa, ruta[i].tipoTerreno);
-
-        return costeTotal;
-    }
-
-    [HideInInspector] public bool esTurnoJugador = true;
-    [HideInInspector] public bool turnoEnemigoEnCurso = false;
 
     public void IniciarTurnoEnemigo()
     {
-        if (turnoEnemigoEnCurso) return;
+        if (turnoEnemigoEnCurso)
+            return;
 
-        //esTurnoJugador = false;
         unidadSeleccionada = false;
+
         if (unidadActual != null)
-            unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);
+        {
+            unidadActual.GetComponent<GlowUnidad>()
+                ?.SetGlow(false);
+        }
+
         LimpiarPuntosMovimiento();
-        //StartCoroutine(TurnoEnemigo());
-
-
-        //Codigo modificado Leo 
 
         turnoEnemigoEnCurso = true;
 
-        // Reinicio explícito aquí: no dependemos del Update
         ReiniciarUnidadesEnemigas();
 
-        if (tropasEnemigas.Count == 0 || tropasJugador.Count == 0)
+        if (tropasEnemigas.Count == 0 ||
+            tropasJugador.Count == 0)
         {
-            turnoEnemigoEnCurso = false;
             TerminarTurnoEnemigo();
             return;
         }
 
         esTurnoJugador = false;
 
-        List<GAgent> agentes = new List<GAgent>();
+        // NUEVO: limpiamos posibles agentes pendientes de un turno anterior.
+        agentesPendientes.Clear();
 
         foreach (UnidadHex enemigo in tropasEnemigas)
         {
-            if (enemigo == null) continue;
+            if (enemigo == null)
+                continue;
 
             GAgent agente = enemigo.GetComponent<GAgent>();
 
-            if (agente == null) continue;
+            if (agente == null)
+            {
+                Debug.LogWarning(
+                    enemigo.name + " no tiene un GAgent."
+                );
 
-            agentes.Add(agente);
+                continue;
+            }
+
             agentesPendientes.Add(agente);
             agente.OnTurnFinished += OnAgenteTurnFinished;
         }
-
 
         if (agentesPendientes.Count == 0)
         {
@@ -285,114 +392,35 @@ public class ControlUnidades : MonoBehaviour
             return;
         }
 
-        foreach (UnidadHex enemigo in tropasEnemigas)
+        // Recorremos una copia para evitar errores si un agente
+        // termina su turno y se elimina del HashSet original.
+        foreach (GAgent agente in new List<GAgent>(agentesPendientes))
         {
-            GAgent agente = enemigo.GetComponent<GAgent>();
             agente.StartTurn();
         }
-        
-
     }
+
     private void OnAgenteTurnFinished(GAgent agente)
     {
-        if (agente == null) return;
+        if (agente == null)
+            return;
 
-        
         agente.OnTurnFinished -= OnAgenteTurnFinished;
 
         agentesPendientes.Remove(agente);
 
-        // Comprobar si todos han terminado.
         if (agentesPendientes.Count == 0)
-        {
-            
             TerminarTurnoEnemigo();
-        }
     }
 
-    //IEnumerator TurnoEnemigo()
-    //{
-    //turnoEnemigoEnCurso = true;
-
-    //// Reinicio explícito aquí: no dependemos del Update
-    //ReiniciarUnidadesEnemigas();
-
-    //if (tropasEnemigas.Count == 0 || tropasJugador.Count == 0)
-    //{
-    //    turnoEnemigoEnCurso = false;
-    //    TerminarTurnoEnemigo();
-    //    yield break;
-    //}
-
-    //foreach (UnidadHex enemigo in tropasEnemigas)
-    //{
-    //    if (enemigo == null) continue;
-
-    //    if (enemigo.puntosMovimientoRestantes <= 0)
-    //    {
-    //        Debug.Log(enemigo.datosTropa.nombreTropa + " no tiene movimiento.");
-    //        continue;
-    //    }
-
-    //    // El evaluador recibe TODOS los jugadores.
-    //    // Él decidirá a cuál conviene acercarse.
-
-    //    List<HexTile> ruta = evaluador.ElegirRuta(
-    //        enemigo,
-    //        tropasJugador
-    //    );
-
-    //    if (ruta.Count <= 1)
-    //    {
-    //        Debug.Log(enemigo.datosTropa.nombreTropa + " se queda quieto.");
-    //        continue;
-    //    }
-
-    //    for (int i = 1; i < ruta.Count; i++)
-    //    {
-    //        movimientoEnCurso = true;
-    //        yield return StartCoroutine(MoverUnidad(enemigo, ruta[i]));
-    //    }
-
-    //    enemigo.puntosMovimientoRestantes = 0;
-    //    enemigo.yaSeHaMovido = true;
-    //}
-
-    //turnoEnemigoEnCurso = false;
-    //TerminarTurnoEnemigo();
-    //}
-
-    // Elige el jugador más cercano que esté en una casilla válida
-    UnidadHex ElegirObjetivo(UnidadHex enemigo)
+    private void TerminarTurnoEnemigo()
     {
-        HexTile casillaEnemigo = grid.ObtenerCasilla(enemigo.coordenadaX, enemigo.coordenadaY);
-        if (casillaEnemigo == null) return null;
+        if (!turnoEnemigoEnCurso)
+            return;
 
-        UnidadHex mejor = null;
-        int mejorDist = int.MaxValue;
-
-        foreach (UnidadHex jugador in tropasJugador)
-        {
-            if (jugador == null) continue;
-            if (grid.ObtenerCasilla(jugador.coordenadaX, jugador.coordenadaY) == null) continue;
-
-            int d = evaluador.DistanciaHex(casillaEnemigo, jugador);
-
-            if (d < mejorDist)
-            {
-                mejorDist = d;
-                mejor = jugador;
-            }
-        }
-
-        return mejor;
-    }
-
-    void TerminarTurnoEnemigo()
-    {
-        if(!turnoEnemigoEnCurso) return;
         turnoEnemigoEnCurso = false;
         esTurnoJugador = true;
+
         GameManager.instance.CambiarTurno();
     }
 
@@ -402,9 +430,13 @@ public class ControlUnidades : MonoBehaviour
 
         foreach (UnidadHex unidad in tropasJugador)
         {
-            if (unidad == null) continue;
+            if (unidad == null)
+                continue;
 
-            int presupuesto = movimiento.pesosTerreno.ObtenerPresupuesto(unidad.datosTropa);
+            int presupuesto =
+                movimiento.pesosTerreno.ObtenerPresupuesto(
+                    unidad.datosTropa
+                );
 
             unidad.puntosMovimientoMaximos = presupuesto;
             unidad.puntosMovimientoRestantes = presupuesto;
@@ -414,6 +446,7 @@ public class ControlUnidades : MonoBehaviour
         }
 
         unidadesAliadasReiniciadas = true;
+
         ActualizarTextoPuntos();
     }
 
@@ -423,9 +456,13 @@ public class ControlUnidades : MonoBehaviour
 
         foreach (UnidadHex unidad in tropasEnemigas)
         {
-            if (unidad == null) continue;
+            if (unidad == null)
+                continue;
 
-            int presupuesto = movimiento.pesosTerreno.ObtenerPresupuesto(unidad.datosTropa);
+            int presupuesto =
+                movimiento.pesosTerreno.ObtenerPresupuesto(
+                    unidad.datosTropa
+                );
 
             unidad.puntosMovimientoMaximos = presupuesto;
             unidad.puntosMovimientoRestantes = presupuesto;
@@ -437,12 +474,16 @@ public class ControlUnidades : MonoBehaviour
         unidadesEnemigasReiniciadas = true;
     }
 
-    void ActualizarColorUnidad(UnidadHex unidad)
+    private void ActualizarColorUnidad(UnidadHex unidad)
     {
-        SpriteRenderer sr = unidad.GetComponentInChildren<SpriteRenderer>();
+        SpriteRenderer sr =
+            unidad.GetComponentInChildren<SpriteRenderer>();
 
-        if (sr == null) return;
+        if (sr == null)
+            return;
 
-        sr.color = unidad.yaSeHaMovido ? Color.gray : Color.white;
+        sr.color = unidad.yaSeHaMovido
+            ? Color.gray
+            : Color.white;
     }
 }

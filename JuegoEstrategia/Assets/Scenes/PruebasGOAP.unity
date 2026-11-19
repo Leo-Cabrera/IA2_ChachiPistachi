@@ -1118,6 +1118,7 @@ MonoBehaviour:
   - {fileID: 916484320}
   - {fileID: 916484325}
   currentAction: {fileID: 0}
+  lastAction: {fileID: 0}
   unidad: {fileID: 0}
 --- !u!114 &916484325
 MonoBehaviour:
@@ -1140,6 +1141,29 @@ MonoBehaviour:
   afterEffects:
   - key: MoreCoins
     value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+--- !u!114 &916484329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916484309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad447d50a8d5e2b459c19524096eca0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StayStill
+  actionName: StayStill
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: StayStill
+    value: 1
   running: 0
   finished: 0
   goalSatisfied: 0
@@ -2283,6 +2307,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
       insertIndex: -1
       addedObject: {fileID: 916484325}
+    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 916484329}
   m_SourcePrefab: {fileID: 100100000, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

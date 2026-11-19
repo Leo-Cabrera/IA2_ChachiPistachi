@@ -1,8 +1,9 @@
+
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
 
+// NUEVO: representa un objetivo que el agente puede perseguir.
 public class SubGoal
 {
     public Dictionary<string, int> sgoals;
@@ -23,162 +24,198 @@ public class GAgent : MonoBehaviour
 
     GPlanner planner;
     Queue<GAction> actionQueue;
+
     [HideInInspector] public GAction currentAction;
     [HideInInspector] public GAction lastAction;
+
     SubGoal currentGoal;
 
-    
-
     public event System.Action<GAgent> OnTurnFinished;
+
     private bool turnFinished = true;
-    private bool plannigAtempted = false;
+    private bool planningAttempted = false;
+    private bool invoke = false;
+
     [HideInInspector] public UnidadHex unidad;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
         unidad = GetComponent<UnidadHex>();
-        GAction[] acts = this.GetComponents<GAction>();
+
+        GAction[] acts = GetComponents<GAction>();
+
         foreach (GAction a in acts)
         {
-            actions.Add(a);
+            if (!actions.Contains(a))
+                actions.Add(a);
         }
     }
 
-    bool invoke = false;
-
-    void CompleteAction()
+    private void CompleteAction()
     {
-        if (currentAction == null) return;
+        if (currentAction == null)
+            return;
 
         bool success = currentAction.PostPerform();
+
         lastAction = currentAction;
+
         currentAction.running = false;
+        currentAction = null;
+
         invoke = false;
 
         if (!success)
         {
             actionQueue = null;
+            FinishTurn();
         }
-
-        currentAction = null;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        if (turnFinished) return;
-
-        //metodo para revisar si la accion en curso ha terminado
-        if(currentAction != null && currentAction.running)
-        {
-            if (currentAction.finished)//si tiene un camino y ha llegado al sitio, o sea ha terminado
-            {
-                if (!invoke)
-                {
-                    Invoke("CompleteAction", currentAction.duration);
-                    invoke= true;
-                }
-            }
+        if (turnFinished)
             return;
-        }
 
-        if(unidad.puntosMovimientoRestantes <= 0)
+        if (unidad == null)
         {
             FinishTurn();
             return;
         }
 
-        //revisar si se han terminado las acciones del plan para eliminar el plan
+        // Esperamos a que termine la acción que se está ejecutando.
+        if (currentAction != null && currentAction.running)
+        {
+            if (currentAction.finished && !invoke)
+            {
+                Invoke(nameof(CompleteAction), currentAction.duration);
+                invoke = true;
+            }
+
+            return;
+        }
+
+        if (unidad.puntosMovimientoRestantes <= 0)
+        {
+            FinishTurn();
+            return;
+        }
+
+        // Si ya no quedan acciones en el plan, comprobamos el resultado.
         if (actionQueue != null && actionQueue.Count == 0)
         {
-            if (currentGoal.remove && GoalSatisfied(currentAction))
+            if (currentGoal != null &&
+                currentGoal.remove &&
+                lastAction != null &&
+                lastAction.goalSatisfied)
             {
-                
                 goals.Remove(currentGoal);
             }
-            
+
             FinishTurn();
             return;
         }
 
-        //activar siguiente accion del plan
+        // Ejecutamos la siguiente acción.
         if (actionQueue != null && actionQueue.Count > 0)
         {
             currentAction = actionQueue.Dequeue();
+
             if (currentAction.PrePerform())
             {
-                if (!currentAction.running)
-                {
-                    currentAction.running = true;
-                    currentAction.IniciateAction();
-                }
+                currentAction.running = true;
+                currentAction.finished = false;
+                currentAction.IniciateAction();
             }
-
             else
             {
+                // NUEVO: si una acción no puede empezar, se termina el turno.
+                // Evita entrar en ciclos de planificación.
                 currentAction = null;
                 actionQueue = null;
-                currentGoal = null;
-
-                plannigAtempted = false;
-                PlanTurn();
-                return;
+                FinishTurn();
             }
         }
     }
 
     public void StartTurn()
     {
-        Debug.Log("START TURN: " + unidad.datosTropa.nombreTropa);
-        Debug.Log("Objetivos disponibles: " + goals.Count);
+        if (!turnFinished)
+            return;
 
-        if(!turnFinished) return;
+        if (unidad == null)
+            unidad = GetComponent<UnidadHex>();
+
+        if (unidad == null)
+        {
+            Debug.LogError("El agente no tiene una UnidadHex.");
+            return;
+        }
+
+        Debug.Log("START TURN: " + unidad.datosTropa.nombreTropa);
 
         turnFinished = false;
-        plannigAtempted = false;
+        planningAttempted = false;
 
         planner = null;
         actionQueue = null;
         currentAction = null;
+        lastAction = null;
+        currentGoal = null;
+
+        CancelInvoke();
 
         PlanTurn();
     }
+
     private void PlanTurn()
     {
-        if(turnFinished || plannigAtempted) return;
-        plannigAtempted = true;
+        if (turnFinished || planningAttempted)
+            return;
+
+        planningAttempted = true;
 
         planner = new GPlanner();
 
-        var sortedGoals = from entry in goals orderby entry.Value descending select entry;
+        // NUEVO: mezclamos el orden de los objetivos.
+        // Así el NPC no elige siempre la misma alternativa.
+        List<SubGoal> availableGoals = goals.Keys.ToList();
 
-        foreach (KeyValuePair<SubGoal, int> sg in sortedGoals)
+        for (int i = availableGoals.Count - 1; i > 0; i--)
         {
-            actionQueue = planner.plan(actions, sg.Key.sgoals, null);
-            if (actionQueue != null)
+            int j = Random.Range(0, i + 1);
+
+            SubGoal temp = availableGoals[i];
+            availableGoals[i] = availableGoals[j];
+            availableGoals[j] = temp;
+        }
+
+        foreach (SubGoal sg in availableGoals)
+        {
+            actionQueue = planner.plan(actions, sg.sgoals, null);
+
+            if (actionQueue != null && actionQueue.Count > 0)
             {
-                currentGoal = sg.Key;
+                currentGoal = sg;
+                Debug.Log("Objetivo elegido por " +
+                          unidad.datosTropa.nombreTropa);
                 break;
             }
         }
 
-        if(actionQueue == null || actionQueue.Count == 0)
-        {
+        if (actionQueue == null || actionQueue.Count == 0)
             FinishTurn();
-        }
     }
 
     private void FinishTurn()
     {
-        if(turnFinished) return;
-        turnFinished = true;
-        OnTurnFinished?.Invoke(this);
-    }
+        if (turnFinished)
+            return;
 
-    private bool GoalSatisfied(GAction goal)
-    {
-        if (goal == null) return false;
-        return goal.goalSatisfied;
-        
+        turnFinished = true;
+
+        CancelInvoke();
+
+        OnTurnFinished?.Invoke(this);
     }
 }

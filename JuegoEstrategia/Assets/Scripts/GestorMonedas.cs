@@ -22,6 +22,15 @@ public class GestorMonedas: MonoBehaviour
 
     private int monedasEnMapa = 0; //cuenta las monedas que siguen en el tablero
 
+    //devuelve el saldo del equipo que tenga el turno 
+    public int ObtenerMonedas(bool esJugador)
+    {
+        if (esJugador)
+            return monedasJugador;
+
+        return monedasIA;
+    } 
+
     public void RecompensarTropasQuietas(List<UnidadHex> tropas, bool esJugador)
     {
         int recompensa = 0;  //empieza en 0 cada vez que se llama al metodo asi terminaremos con una cantidad y borraremos al siguiente turno
@@ -29,16 +38,16 @@ public class GestorMonedas: MonoBehaviour
         foreach (UnidadHex unidad in tropas)  //por cada unidad que tenemos en la lista de tropas
         {
             //si la unidad esta vacia (hemos puesto en la lista que hay mas de las que hay en el mapa, para que las pruebes no den error)
-            //y la unidad se ha desplazado == true
+            //o la unidad se ha desplazado == true
             if (unidad == null || unidad.seHaDesplazadoEsteTurno) 
-                continue; //entonces continuamos con el codigo, asi si hay algun hueco en la lista, no comprueba si se mueve y no da error
+                continue; //entonces continuamos con la siguiente tropa del foreach porque la actual no dara recompensa
 
             int nivel = 0;  //en caso de no tener conocimiento del nivel, que su base sea el 0
             if (unidad.datosTropa != null)  //mientras tengamos la tropa tenga datos
-                nivel = unidad.datosTropa.nivel;  //cambiamos el nivel en el que esta (las evoluciones)
+                nivel = unidad.datosTropa.nivel;  //cambiamos la variable nivel, por el nivel de la tropa (las evoluciones)
 
-            //lo de mathclamp es para que use el nivel si esta entre 0 y 3, asi evitamos problemas. Si es nivel 0 entonces a recompensa
-            //le sumaremos nivel +1, asi que 0 +1, dandonos asi una moneda
+            //lo de mathclamp es para que use el nivel si esta entre 0 y 2, asi evitamos problemas. Si es nivel 0 entonces a la recompensa
+            //le sumaremos nivel +1, asi que 0 +1, dandonos asi una moneda si eres de nivel 0
             recompensa += Mathf.Clamp(nivel, 0, 2) + 1;
         }
 
@@ -120,7 +129,7 @@ public class GestorMonedas: MonoBehaviour
             Destroy(casillaDestino.monedaEnCasilla);  //eliminamos la moneda que se encuentra en la casilla del jugador/IA
             casillaDestino.monedaEnCasilla = null;  //actualizamos casillaDestino porque ya no habrá una moneda en esa casilla
 
-            //la moneda del mapa da 3 monedas 
+            //la moneda del mapa dara el saldo aleatorio que le haya tocado
             if (unidad.esJugador == true)  //si quien ha cogido la moneda es una unidad del jugador, ya usamos el esjugador en unidadhex
             {
                 monedasJugador += valorRecogido;  //sumamos el valor de la moneda que haya cogido

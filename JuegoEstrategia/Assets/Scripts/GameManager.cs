@@ -41,6 +41,20 @@ public class GameManager : MonoBehaviour
 
     public void CambiarTurno()
     {
+        ControlUnidades control = ControlUnidades.instance;
+
+        //Si el jugador todavía está moviendo una tropa, puede terminar el turno al llegar
+        if (turnoJugador && control != null && control.movimientoEnCurso)
+            return;
+
+        if (control != null && control.gestorMonedas != null)
+        {
+            if (turnoJugador)
+                control.gestorMonedas.RecompensarTropasQuietas(control.tropasJugador, true);
+            else
+                control.gestorMonedas.RecompensarTropasQuietas(control.tropasEnemigas, false);
+        }
+
         turnoJugador = !turnoJugador;
 
         ActualizarInterfaz();

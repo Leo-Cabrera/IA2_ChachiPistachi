@@ -22,6 +22,32 @@ public class GestorMonedas: MonoBehaviour
 
     private int monedasEnMapa = 0; //cuenta las monedas que siguen en el tablero
 
+    public void RecompensarTropasQuietas(List<UnidadHex> tropas, bool esJugador)
+    {
+        int recompensa = 0;  //empieza en 0 cada vez que se llama al metodo asi terminaremos con una cantidad y borraremos al siguiente turno
+
+        foreach (UnidadHex unidad in tropas)  //por cada unidad que tenemos en la lista de tropas
+        {
+            //si la unidad esta vacia (hemos puesto en la lista que hay mas de las que hay en el mapa, para que las pruebes no den error)
+            //y la unidad se ha desplazado == true
+            if (unidad == null || unidad.seHaDesplazadoEsteTurno) 
+                continue; //entonces continuamos con el codigo, asi si hay algun hueco en la lista, no comprueba si se mueve y no da error
+
+            int nivel = 0;  //en caso de no tener conocimiento del nivel, que su base sea el 0
+            if (unidad.datosTropa != null)  //mientras tengamos la tropa tenga datos
+                nivel = unidad.datosTropa.nivel;  //cambiamos el nivel en el que esta (las evoluciones)
+
+            //lo de mathclamp es para que use el nivel si esta entre 0 y 3, asi evitamos problemas. Si es nivel 0 entonces a recompensa
+            //le sumaremos nivel +1, asi que 0 +1, dandonos asi una moneda
+            recompensa += Mathf.Clamp(nivel, 0, 2) + 1;
+        }
+
+        if (esJugador) //si de quien hemos hecho las comprobaciones es el jugador
+            monedasJugador += recompensa;  //sumamos al contador de las monedas del jugador
+        else
+            monedasIA += recompensa;  //lo mismo si es la IA
+    }
+
     public void ColocarMoneda()
     {
         //para comprobar que hemos asignaddo cosas en el inspector antes de continuar
@@ -68,6 +94,8 @@ public class GestorMonedas: MonoBehaviour
 
             //crea una copia del prefab moneda y guarda la referencia de esa copia en monedacreada
             monedaCreada = Instantiate(moneda);
+            Moneda datosMoneda = monedaCreada.GetComponent<Moneda>();  //busca el componente (script) moneda en nuestro objeto moneda
+            datosMoneda.valor = Random.Range(2, 6);  //entonces hace cambios en ese componente en la variable de valor para que sea random
             monedasEnMapa++; //sumamos la moneda que acabamos de colocar
 
             //mueve la copia a la posición de la casilla seleccionada con el range
@@ -85,17 +113,21 @@ public class GestorMonedas: MonoBehaviour
 
         if (casillaDestino.monedaEnCasilla != null)  //si hay una moneda en esa casilla
         {
+            //leemos el valor de la moneda antes de retirarla del mapa
+            Moneda datosMoneda = casillaDestino.monedaEnCasilla.GetComponent<Moneda>();  //busca el script de esa moneda especifica
+            int valorRecogido = datosMoneda.valor;  //del script Moneda, se queda con el valor que tenga
+
             Destroy(casillaDestino.monedaEnCasilla);  //eliminamos la moneda que se encuentra en la casilla del jugador/IA
             casillaDestino.monedaEnCasilla = null;  //actualizamos casillaDestino porque ya no habrá una moneda en esa casilla
 
             //la moneda del mapa da 3 monedas 
             if (unidad.esJugador == true)  //si quien ha cogido la moneda es una unidad del jugador, ya usamos el esjugador en unidadhex
             {
-                monedasJugador += 3;
+                monedasJugador += valorRecogido;  //sumamos el valor de la moneda que haya cogido
             }
             else  //sino habra sido la de la IA
             {
-                monedasIA += 3;
+                monedasIA += valorRecogido;
             }
 
             Debug.Log($"Moneda recogida. Jugador: {monedasJugador}, IA: {monedasIA}");  //para comprobar, ya lo haremos en canva

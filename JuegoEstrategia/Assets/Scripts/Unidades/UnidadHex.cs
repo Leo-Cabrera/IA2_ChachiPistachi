@@ -19,6 +19,9 @@ public class UnidadHex : MonoBehaviour
     public int puntosMovimientoMaximos = 0;
     public bool yaSeHaMovido = false;
 
+    //indica si la unidad ha cambiado de casilla durante el turno, lo necesitamos para ver si damos monedas
+    public bool seHaDesplazadoEsteTurno = false;
+
     [Header("Datos de la tropa")]
     public DatosTropa datosTropa;
 }

@@ -298,6 +298,13 @@ public class ControlUnidades : MonoBehaviour
 
         unidad.transform.position = posicionFinal;
 
+        //comparamos la casilla de origen con la de destino
+        if (unidad.coordenadaX != destino.coordenadaX ||
+            unidad.coordenadaY != destino.coordenadaY)
+        {
+            unidad.seHaDesplazadoEsteTurno = true;
+        }
+
         unidad.coordenadaX = destino.coordenadaX;
         unidad.coordenadaY = destino.coordenadaY;
 
@@ -441,6 +448,7 @@ public class ControlUnidades : MonoBehaviour
             unidad.puntosMovimientoMaximos = presupuesto;
             unidad.puntosMovimientoRestantes = presupuesto;
             unidad.yaSeHaMovido = false;
+            unidad.seHaDesplazadoEsteTurno = false;
 
             ActualizarColorUnidad(unidad);
         }
@@ -467,6 +475,7 @@ public class ControlUnidades : MonoBehaviour
             unidad.puntosMovimientoMaximos = presupuesto;
             unidad.puntosMovimientoRestantes = presupuesto;
             unidad.yaSeHaMovido = false;
+            unidad.seHaDesplazadoEsteTurno = false;
 
             ActualizarColorUnidad(unidad);
         }

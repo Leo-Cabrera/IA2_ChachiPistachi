@@ -10,7 +10,7 @@ public class TIMBURR : GAgent
         // MODIFICADO: objetivo de acercarse al enemigo.
         // Se mantiene disponible para poder volver a intentarlo
         // en los siguientes turnos si todavía no está cerca.
-        SubGoal acercarse = new SubGoal("BeNextTo", 1, false);
+        SubGoal acercarse = new SubGoal("Farming", 1, false);
         goals.Add(acercarse, 3);
 
         // NUEVO: alternativa de quedarse quieto.

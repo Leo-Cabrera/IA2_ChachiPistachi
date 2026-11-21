@@ -10,11 +10,13 @@ public class Approach : GAction
         base.goalSatisfied = false;
 
         return base.unidad != null &&
-               base.unidad.puntosMovimientoRestantes > 0;
+               !agent.beliefs.HasState("puedeMoverse");
     }
 
     public override bool PostPerform()
     {
+        agent.RefreshBeliefs();
+        agent.beliefs.RemoveState("turnoIntacto"); //turno usado
         return true;
     }
 
@@ -29,22 +31,27 @@ public class Approach : GAction
         if (base.unidad == null)
         {
             finished = true;
+            agent.RefreshBeliefs();
             yield break;
         }
 
         // NUEVO: si ya está junto a un enemigo, no necesita avanzar.
         if (EstaJuntoAEnemigo())
         {
-            base.goalSatisfied = true;
             finished = true;
             yield break;
         }
 
         if (base.unidad.puntosMovimientoRestantes <= 0)
         {
+
+
+            Debug.Log(base.unidad.datosTropa.nombreTropa + " se queda quieto.");
             finished = true;
+            agent.RefreshBeliefs();
             yield break;
         }
+
 
         ControlUnidades control = ControlUnidades.instance;
 
@@ -52,6 +59,7 @@ public class Approach : GAction
         {
             Debug.LogError("No se ha encontrado ControlUnidades o EvaluadorTactico.");
             finished = true;
+            agent.RefreshBeliefs();
             yield break;
         }
 
@@ -70,7 +78,7 @@ public class Approach : GAction
             base.unidad.puntosMovimientoRestantes = 0;
             base.unidad.yaSeHaMovido = true;
 
-            base.goalSatisfied = EstaJuntoAEnemigo();
+            ActualizarPreparadoAtacar();
 
             finished = true;
             yield break;
@@ -90,15 +98,17 @@ public class Approach : GAction
             );
 
             // Si ya hemos llegado junto al jugador, no seguimos avanzando.
-            if (EstaJuntoAEnemigo())
+            if (ActualizarPreparadoAtacar())
                 break;
         }
 
+
+        //base.unidad.puntosMovimientoRestantes -= ruta.Count; //por ahora resta puntos por casilla, cambiar segun terreno
         base.unidad.yaSeHaMovido = true;
 
         // NUEVO: solo consideramos alcanzado el objetivo
         // cuando realmente estamos junto a un jugador.
-        base.goalSatisfied = EstaJuntoAEnemigo();
+        ActualizarPreparadoAtacar();
 
         Debug.Log(
             base.unidad.datosTropa.nombreTropa +
@@ -140,5 +150,23 @@ public class Approach : GAction
         }
 
         return false;
+    }
+    private bool ActualizarPreparadoAtacar()
+    {
+        bool estaJuntoAEnemigo = EstaJuntoAEnemigo();
+        if (estaJuntoAEnemigo) {
+            agent.beliefs.SetState("preparadoAtacar", 1);
+            base.goalSatisfied = true;
+            agent.RefreshBeliefs();
+            return true;
+        }
+            
+        else
+        {
+            agent.beliefs.RemoveState("preparadoAtacar");
+            base.goalSatisfied = false;
+            agent.RefreshBeliefs();
+            return false;
+        }
     }
 }

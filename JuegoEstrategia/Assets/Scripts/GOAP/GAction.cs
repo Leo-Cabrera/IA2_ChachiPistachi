@@ -14,12 +14,13 @@ public abstract class GAction : MonoBehaviour
     public Dictionary<string, int> preconditions;
     public Dictionary<string, int> effects;
 
-    public WorldStates agentBeliefs;
+    
 
     [HideInInspector] public bool running = false;
     [HideInInspector] public bool finished = false;
     [HideInInspector] public bool goalSatisfied = false;
     [HideInInspector] public UnidadHex unidad;
+    [HideInInspector] public GAgent agent;
 
     public GAction()
     {
@@ -30,7 +31,7 @@ public abstract class GAction : MonoBehaviour
     public void Awake()
     {
         // MODIFICADO: limpiamos los diccionarios para evitar claves duplicadas
-        // si la acción vuelve a inicializarse.
+        // si la acción vuelve a inicializarse. 
         preconditions.Clear();
         effects.Clear();
 
@@ -53,6 +54,7 @@ public abstract class GAction : MonoBehaviour
         }
 
         unidad = GetComponent<UnidadHex>();
+        agent = GetComponent<GAgent>();
     }
 
     public bool IsAchievable()
@@ -63,11 +65,11 @@ public abstract class GAction : MonoBehaviour
     public bool IsAchievableGiven(Dictionary<string, int> conditions)
     {
         // CONSERVADO: se comprueba la existencia de la clave.
-        // Los valores 0 del Inspector siguen siendo compatibles con el GOAP actual.
+        
         foreach (KeyValuePair<string, int> p in preconditions)
         {
-            if (!conditions.ContainsKey(p.Key))
-                return false;
+            if (!conditions.TryGetValue(p.Key, out int v)) return false;
+            if (v != p.Value) return false;
         }
 
         return true;

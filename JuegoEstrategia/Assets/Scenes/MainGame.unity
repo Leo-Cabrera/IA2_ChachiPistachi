@@ -440,55 +440,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3125106428952465553, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 91fc0debd1467d14bb911e6ceb645402, type: 2}
-    - target: {fileID: 3778943304033310939, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      propertyPath: datosTropa
-      value: 
-      objectReference: {fileID: 2035311083}
-    - target: {fileID: 3778943304033310939, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      propertyPath: coordenadaX
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 3778943304033310939, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      propertyPath: coordenadaY
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
       propertyPath: m_Name
       value: TurtwigEnemigo
       objectReference: {fileID: 0}
-    - target: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+    - target: {fileID: 5935997169434621796, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
+      propertyPath: preConditions.Array.data[0].key
+      value: EnemigoAlLado
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 2035311098}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 2035311097}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 2035311096}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 2035311095}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2035311084}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2035311083}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2035311091}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
 --- !u!1 &513722309 stripped
 GameObject:
@@ -1113,190 +1076,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801622235}
   m_CullTransparentMesh: 1
---- !u!1 &916484309 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-  m_PrefabInstance: {fileID: 8034130202726779520}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &916484313
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fbe84960fecfc24580a0286ae219c06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DatosTropa
-  nombreTropa: Fennekin
-  tipoTropa: 3
-  nivel: 0
---- !u!58 &916484314
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.6
 --- !u!114 &916484315 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3778943304033310939, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
   m_PrefabInstance: {fileID: 8034130202726779520}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac4ba650b5104bf459e95adbfcaa213f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnidadHex
---- !u!114 &916484319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c1601079e4daa641b3e708f22836ccb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GlowUnidad
 --- !u!4 &916484320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1116170461080953915, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
   m_PrefabInstance: {fileID: 8034130202726779520}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &916484323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad447d50a8d5e2b459c19524096eca0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StayStill
-  actionName: StayStill
-  cost: 1
-  duration: 0
-  preConditions:
-  - key: turnoIntacto
-    value: 1
-  afterEffects:
-  - key: StayStill
-    value: 1
-  - key: turnoIntacto
-    value: 0
-  running: 0
-  finished: 0
-  goalSatisfied: 0
-  unidad: {fileID: 0}
-  agent: {fileID: 0}
---- !u!114 &916484324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e60857a0cc78a4941ab361e2efa8457e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Farming
-  actionName: Farming
-  cost: 1
-  duration: 0
-  preConditions:
-  - key: turnoIntacto
-    value: 1
-  afterEffects:
-  - key: Farming
-    value: 1
-  - key: turnoIntacto
-    value: 0
-  running: 0
-  finished: 0
-  goalSatisfied: 0
-  unidad: {fileID: 0}
-  agent: {fileID: 0}
---- !u!114 &916484325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f43995fb1aa8504784568c738061cf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Approach
-  actionName: Approach
-  cost: 1
-  duration: 0
-  preConditions: []
-  afterEffects:
-  - key: turnoIntacto
-    value: 0
-  running: 0
-  finished: 0
-  goalSatisfied: 0
-  unidad: {fileID: 0}
-  agent: {fileID: 0}
---- !u!114 &916484326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4315345a12f0d7543ae59ae251cc439e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FENNEKIN
-  actions:
-  - {fileID: 916484325}
-  - {fileID: 916484324}
-  - {fileID: 916484323}
-  currentAction: {fileID: 0}
-  lastAction: {fileID: 0}
-  unidad: {fileID: 0}
-  unitIndex: 0
 --- !u!1 &970767230
 GameObject:
   m_ObjectHideFlags: 0
@@ -2307,190 +2102,22 @@ MonoBehaviour:
   mostrarColores: 1
   mostrarGizmos: 1
   decay: 0.5
---- !u!1 &2035311082 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3899122756539482887, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
-  m_PrefabInstance: {fileID: 471855421}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2035311083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fbe84960fecfc24580a0286ae219c06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DatosTropa
-  nombreTropa: Turwig
-  tipoTropa: 4
-  nivel: 0
---- !u!58 &2035311084
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.56
 --- !u!114 &2035311087 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3778943304033310939, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
   m_PrefabInstance: {fileID: 471855421}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac4ba650b5104bf459e95adbfcaa213f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnidadHex
---- !u!114 &2035311091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c1601079e4daa641b3e708f22836ccb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GlowUnidad
 --- !u!4 &2035311092 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1116170461080953915, guid: 7babcd7b2c9fc9d42b3a3c33c6a56e88, type: 3}
   m_PrefabInstance: {fileID: 471855421}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2035311095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad447d50a8d5e2b459c19524096eca0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StayStill
-  actionName: StayStill
-  cost: 1
-  duration: 0
-  preConditions:
-  - key: turnoIntacto
-    value: 1
-  afterEffects:
-  - key: StayStill
-    value: 1
-  - key: turnoIntacto
-    value: 0
-  running: 0
-  finished: 0
-  goalSatisfied: 0
-  unidad: {fileID: 0}
-  agent: {fileID: 0}
---- !u!114 &2035311096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e60857a0cc78a4941ab361e2efa8457e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Farming
-  actionName: Farming
-  cost: 1
-  duration: 0
-  preConditions:
-  - key: turnoIntacto
-    value: 1
-  afterEffects:
-  - key: Farming
-    value: 1
-  - key: turnoIntacto
-    value: 0
-  running: 0
-  finished: 0
-  goalSatisfied: 0
-  unidad: {fileID: 0}
-  agent: {fileID: 0}
---- !u!114 &2035311097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f43995fb1aa8504784568c738061cf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Approach
-  actionName: Approach
-  cost: 1
-  duration: 0
-  preConditions: []
-  afterEffects:
-  - key: turnoIntacto
-    value: 0
-  running: 0
-  finished: 0
-  goalSatisfied: 0
-  unidad: {fileID: 0}
-  agent: {fileID: 0}
---- !u!114 &2035311098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035311082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9851bc31019ccee438caea8ecede5db9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TIMBURR
-  actions:
-  - {fileID: 2035311097}
-  - {fileID: 2035311096}
-  - {fileID: 2035311095}
-  currentAction: {fileID: 0}
-  lastAction: {fileID: 0}
-  unidad: {fileID: 0}
-  unitIndex: 0
 --- !u!1 &2071333594
 GameObject:
   m_ObjectHideFlags: 0
@@ -2658,22 +2285,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3125106428952465553, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 91fc0debd1467d14bb911e6ceb645402, type: 2}
-    - target: {fileID: 3778943304033310939, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      propertyPath: datosTropa
-      value: 
-      objectReference: {fileID: 916484313}
-    - target: {fileID: 3778943304033310939, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      propertyPath: puntosMovimientoMaximos
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3778943304033310939, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      propertyPath: puntosMovimientoRestantes
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
       propertyPath: m_Name
       value: FennekinEnemigo
@@ -2681,28 +2292,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 916484326}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 916484325}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 916484324}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 916484323}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 916484313}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 916484314}
-    - targetCorrespondingSourceObject: {fileID: 3899122756539482887, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 916484319}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09da34916eb0e7d49a97f39c674aca03, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

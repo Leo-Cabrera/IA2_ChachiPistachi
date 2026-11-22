@@ -7,16 +7,20 @@ public class TIMBURR : GAgent
     {
         base.Start();
 
-        // MODIFICADO: objetivo de acercarse al enemigo.
-        // Se mantiene disponible para poder volver a intentarlo
-        // en los siguientes turnos si todavía no está cerca.
-        SubGoal acercarse = new SubGoal("Farming", 1, false);
-        goals.Add(acercarse, 3);
+        SubGoal proteger = new SubGoal("Proteger", 1, false);
+        goals.Add(proteger, 5);
 
-        // NUEVO: alternativa de quedarse quieto.
-        // No elimina el objetivo para que pueda volver a elegirse
-        // en turnos posteriores.
-        SubGoal quedarseQuieto = new SubGoal("StayStill", 1, false);
-        goals.Add(quedarseQuieto, 1);
+        SubGoal atacar = new SubGoal("Atacar", 1, false);
+        goals.Add(atacar, 5);
+
+        SubGoal conseguirMonedas = new SubGoal("ConseguirMonedas", 1, false);
+        goals.Add(conseguirMonedas, 3);
+
+        SubGoal curarse = new SubGoal("Curarse", 1, false);
+        goals.Add(curarse, 2);
+
+        SubGoal huir = new SubGoal("Huir", 1, false);
+        goals.Add(huir, 2);
+        
     }
 }

@@ -9,6 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1116170461080953915}
+  - component: {fileID: 3538207779646920925}
+  - component: {fileID: 146028757259520516}
+  - component: {fileID: 1383134424459980256}
+  - component: {fileID: 7781990436012024443}
+  - component: {fileID: 5155376880391527952}
+  - component: {fileID: 1619272564228713453}
+  - component: {fileID: 21671393035772683}
+  - component: {fileID: 1459023553913588231}
   - component: {fileID: 3778943304033310939}
   - component: {fileID: 3125106428952465553}
   - component: {fileID: 2785033800390061884}
@@ -34,6 +42,216 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3538207779646920925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c328c49f3948f9b429eba1d4b8e31252, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OSHAWOTT
+  actions:
+  - {fileID: 146028757259520516}
+  - {fileID: 1383134424459980256}
+  - {fileID: 7781990436012024443}
+  - {fileID: 5155376880391527952}
+  - {fileID: 1619272564228713453}
+  - {fileID: 21671393035772683}
+  - {fileID: 1459023553913588231}
+  currentAction: {fileID: 0}
+  lastAction: {fileID: 0}
+  unidad: {fileID: 0}
+  unitIndex: 0
+--- !u!114 &146028757259520516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac522b0cee68604ab6f37aa5d37e39f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Attack
+  actionName: Attack
+  cost: 1
+  duration: 0
+  preConditions:
+  - key: EnemigoAlLado
+    value: 1
+  afterEffects:
+  - key: Atacar
+    value: 1
+  - key: TurnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &1383134424459980256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f43995fb1aa8504784568c738061cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Approach
+  actionName: Approach
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: turnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &7781990436012024443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60857a0cc78a4941ab361e2efa8457e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Farming
+  actionName: Farming
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: ConseguirMonedas
+    value: 1
+  - key: turnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &5155376880391527952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad447d50a8d5e2b459c19524096eca0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StayStill
+  actionName: StayStill
+  cost: 1
+  duration: 0
+  preConditions:
+  - key: turnoIntacto
+    value: 1
+  afterEffects:
+  - key: ConseguirMonedas
+    value: 1
+  - key: turnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &1619272564228713453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bd7dc1f463bb764995b538f5a007dce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Protect
+  actionName: Protect
+  cost: 1
+  duration: 0
+  preConditions:
+  - key: AliadoAlLado
+    value: 1
+  afterEffects:
+  - key: Protect
+    value: 1
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &21671393035772683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbd84e7a58a08d4996852e42c013bff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Flee
+  actionName: Flee
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: Huir
+    value: 1
+  - key: TurnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &1459023553913588231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 642e99c75ca1043468c8b8955ff0a160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SearchHeal
+  actionName: SearchHeal
+  cost: 1
+  duration: 0
+  preConditions:
+  - key: SanadorAlLado
+    value: 1
+  afterEffects:
+  - key: TurnoIntacto
+    value: 0
+  - key: Curarse
+    value: 1
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
 --- !u!114 &3778943304033310939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51,6 +269,8 @@ MonoBehaviour:
   coordenadaY: 5
   puntosMovimientoRestantes: 3
   puntosMovimientoMaximos: 3
+  yaSeHaMovido: 0
+  datosTropa: {fileID: 0}
 --- !u!212 &3125106428952465553
 SpriteRenderer:
   serializedVersion: 2

@@ -9,6 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1116170461080953915}
+  - component: {fileID: 5429739945006971982}
+  - component: {fileID: 8876019861358066597}
+  - component: {fileID: 7561949087532749601}
+  - component: {fileID: 6049992319896841723}
+  - component: {fileID: 2057835646645930373}
+  - component: {fileID: 5465558580969351814}
   - component: {fileID: 3778943304033310939}
   - component: {fileID: 3125106428952465553}
   - component: {fileID: 2785033800390061884}
@@ -34,6 +40,160 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5429739945006971982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67f589cb1a5a4964ea132937ed177820, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HAPPINY
+  actions:
+  - {fileID: 8876019861358066597}
+  - {fileID: 7561949087532749601}
+  - {fileID: 6049992319896841723}
+  - {fileID: 2057835646645930373}
+  - {fileID: 5465558580969351814}
+  currentAction: {fileID: 0}
+  lastAction: {fileID: 0}
+  unidad: {fileID: 0}
+  unitIndex: 0
+--- !u!114 &8876019861358066597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f43995fb1aa8504784568c738061cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Approach
+  actionName: Approach
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: turnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &7561949087532749601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad447d50a8d5e2b459c19524096eca0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StayStill
+  actionName: StayStill
+  cost: 1
+  duration: 0
+  preConditions:
+  - key: turnoIntacto
+    value: 1
+  afterEffects:
+  - key: ConseguirMonedas
+    value: 1
+  - key: turnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &6049992319896841723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60857a0cc78a4941ab361e2efa8457e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Farming
+  actionName: Farming
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: ConseguirMonedas
+    value: 1
+  - key: turnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &2057835646645930373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbd84e7a58a08d4996852e42c013bff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Flee
+  actionName: Flee
+  cost: 1
+  duration: 0
+  preConditions: []
+  afterEffects:
+  - key: Huir
+    value: 1
+  - key: TurnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
+--- !u!114 &5465558580969351814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3899122756539482887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2483a06d62f3fe4ca346ff7160f23c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Heal
+  actionName: Heal
+  cost: 1
+  duration: 0
+  preConditions:
+  - key: AliadoAlLado
+    value: 1
+  afterEffects:
+  - key: Curar
+    value: 1
+  - key: TurnoIntacto
+    value: 0
+  running: 0
+  finished: 0
+  goalSatisfied: 0
+  unidad: {fileID: 0}
+  agent: {fileID: 0}
 --- !u!114 &3778943304033310939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51,6 +211,8 @@ MonoBehaviour:
   coordenadaY: 5
   puntosMovimientoRestantes: 3
   puntosMovimientoMaximos: 3
+  yaSeHaMovido: 0
+  datosTropa: {fileID: 0}
 --- !u!212 &3125106428952465553
 SpriteRenderer:
   serializedVersion: 2

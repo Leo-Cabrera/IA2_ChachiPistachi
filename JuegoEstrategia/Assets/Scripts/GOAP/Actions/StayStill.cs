@@ -8,11 +8,13 @@ public class StayStill : GAction
         base.goalSatisfied = false;
 
         return base.unidad != null &&
-               base.unidad.puntosMovimientoRestantes > 0;
+               agent.beliefs.HasState("turnoIntacto");
     }
 
     public override bool PostPerform()
     {
+        base.unidad.puntosMovimientoRestantes = 0;
+        agent.RefreshBeliefs();
         return true;
     }
 

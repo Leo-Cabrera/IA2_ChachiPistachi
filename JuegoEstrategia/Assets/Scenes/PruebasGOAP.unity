@@ -1102,6 +1102,7 @@ MonoBehaviour:
   finished: 0
   goalSatisfied: 0
   unidad: {fileID: 916484315}
+  agent: {fileID: 0}
 --- !u!114 &916484321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,9 +1118,11 @@ MonoBehaviour:
   actions:
   - {fileID: 916484320}
   - {fileID: 916484325}
+  - {fileID: 916484329}
   currentAction: {fileID: 0}
   lastAction: {fileID: 0}
   unidad: {fileID: 0}
+  unitIndex: 0
 --- !u!114 &916484325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1145,6 +1148,7 @@ MonoBehaviour:
   finished: 0
   goalSatisfied: 0
   unidad: {fileID: 0}
+  agent: {fileID: 0}
 --- !u!114 &916484329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1168,6 +1172,7 @@ MonoBehaviour:
   finished: 0
   goalSatisfied: 0
   unidad: {fileID: 0}
+  agent: {fileID: 0}
 --- !u!1 &970767230
 GameObject:
   m_ObjectHideFlags: 0

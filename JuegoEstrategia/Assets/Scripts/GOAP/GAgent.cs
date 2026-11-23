@@ -38,6 +38,11 @@ public class GAgent : MonoBehaviour
 
     [HideInInspector] public UnidadHex unidad;
 
+    [HideInInspector] public int unitIndex;
+
+    [HideInInspector] public WorldStates beliefs;
+
+
     protected virtual void Start()
     {
         unidad = GetComponent<UnidadHex>();
@@ -49,6 +54,12 @@ public class GAgent : MonoBehaviour
             if (!actions.Contains(a))
                 actions.Add(a);
         }
+
+        //temporal mientras solo hay 1 unidad
+        unitIndex = GWorld.Instance.AddUnitAndGetIndex(gameObject);
+        beliefs = new WorldStates();
+        beliefs.SetState("turnoIntacto", 1);
+
     }
 
     private void CompleteAction()
@@ -165,6 +176,9 @@ public class GAgent : MonoBehaviour
 
         CancelInvoke();
 
+        beliefs.SetState("turnoIntacto", 1);
+        RefreshBeliefs();
+
         PlanTurn();
     }
 
@@ -179,26 +193,22 @@ public class GAgent : MonoBehaviour
 
         // NUEVO: mezclamos el orden de los objetivos.
         // Así el NPC no elige siempre la misma alternativa.
-        List<SubGoal> availableGoals = goals.Keys.ToList();
 
-        for (int i = availableGoals.Count - 1; i > 0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-
-            SubGoal temp = availableGoals[i];
-            availableGoals[i] = availableGoals[j];
-            availableGoals[j] = temp;
-        }
+        //Leo:arreglo hecho siguiendo la misma logica pero solo barajando los de misma prioridad
+        List<SubGoal> availableGoals = goals.Keys
+        .OrderByDescending(g => goals[g])
+        .ThenBy(g => Random.value)
+        .ToList();
 
         foreach (SubGoal sg in availableGoals)
         {
-            actionQueue = planner.plan(actions, sg.sgoals, null);
+            actionQueue = planner.plan(actions, sg.sgoals, beliefs);
 
             if (actionQueue != null && actionQueue.Count > 0)
             {
                 currentGoal = sg;
-                Debug.Log("Objetivo elegido por " +
-                          unidad.datosTropa.nombreTropa);
+                //Debug.Log("Objetivo elegido por " + unidad.datosTropa.nombreTropa +
+                //          " (prioridad " + goals[sg] + ")");
                 break;
             }
         }
@@ -216,6 +226,18 @@ public class GAgent : MonoBehaviour
 
         CancelInvoke();
 
+
         OnTurnFinished?.Invoke(this);
+    }
+
+    public void RefreshBeliefs()
+    {
+        int pm = unidad.puntosMovimientoRestantes;
+        beliefs.SetState("puntosMovimiento", pm);
+        // claves booleanas por presencia, como hace tu ModifyState con <= 0
+        if (pm > 0) beliefs.SetState("puedeMoverse", 1);
+        else beliefs.RemoveState("puedeMoverse");
+
+        
     }
 }

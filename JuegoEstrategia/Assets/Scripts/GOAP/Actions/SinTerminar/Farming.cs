@@ -6,15 +6,19 @@ public class Farming : GAction
 {
     public override bool PrePerform()
     {
+
         base.goalSatisfied = false;
 
         return base.unidad != null &&
-               base.unidad.puntosMovimientoRestantes ==
-               base.unidad.puntosMovimientoMaximos;
+            agent.beliefs.HasState("turnoIntacto");
+       
+
     }
 
     public override bool PostPerform()
     {
+        base.unidad.puntosMovimientoRestantes = 0;
+        agent.RefreshBeliefs();
         base.goalSatisfied = true;
         return true;
     }
@@ -22,8 +26,11 @@ public class Farming : GAction
     public override void IniciateAction()
     {
         finished = false;
-
-        Debug.Log("Ha recogido recursos.");
+        Debug.Log(
+            base.unidad.datosTropa.nombreTropa +
+            " ha recogido recursos."
+        );
+        
 
         StartCoroutine(FarmingCoroutine());
     }

@@ -36,12 +36,16 @@ public class GPlanner
         List<Node> leaves = new List<Node>();
 
         // Se parte de una copia de los estados globales.
-        Node start = new Node(
-            null,
-            0,
-            GWorld.Instance.GetWorld().GetStates(),
-            null
-        );
+        Dictionary<string, int> startState =
+        new Dictionary<string, int>(GWorld.Instance.GetWorld().GetStates());
+
+        if (states != null)
+        {
+            foreach (KeyValuePair<string, int> kv in states.GetStates())
+                startState[kv.Key] = kv.Value;   // las creencias sobrescriben al mundo
+        }
+
+        Node start = new Node(null, 0, startState, null);
 
         bool success = BuildGraph(start, leaves, usableActions, goal);
 
@@ -76,10 +80,10 @@ public class GPlanner
         foreach (GAction a in result)
             queue.Enqueue(a);
 
-        Debug.Log("Plan GOAP:");
+        //Debug.Log("Plan GOAP:");
 
-        foreach (GAction a in queue)
-            Debug.Log("Acción: " + a.actionName);
+        //foreach (GAction a in queue)
+        //    Debug.Log("Acción: " + a.actionName);
 
         return queue;
     }
@@ -131,16 +135,14 @@ public class GPlanner
         return foundPath;
     }
 
-    private bool GoalAchieved(
-        Dictionary<string, int> goal,
-        Dictionary<string, int> state)
+    private bool GoalAchieved( Dictionary<string, int> goal,Dictionary<string, int> state)
     {
         // CONSERVADO: los objetivos se consideran alcanzados cuando
-        // existen sus claves. No se comparan sus valores todavía.
+        // existen sus claves. se comparan sus valores .
         foreach (KeyValuePair<string, int> g in goal)
         {
-            if (!state.ContainsKey(g.Key))
-                return false;
+            if (!state.TryGetValue(g.Key, out int v)) return false;
+            if (v != g.Value) return false;
         }
 
         return true;

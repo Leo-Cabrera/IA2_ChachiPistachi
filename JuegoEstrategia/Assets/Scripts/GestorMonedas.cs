@@ -58,8 +58,8 @@ public class GestorMonedas: MonoBehaviour
         foreach (UnidadHex unidad in tropas)  //por cada unidad que tenemos en la lista de tropas
         {
             //si la unidad esta vacia (hemos puesto en la lista que hay mas de las que hay en el mapa, para que las pruebes no den error)
-            //o la unidad se ha desplazado == true
-            if (unidad == null || unidad.seHaDesplazadoEsteTurno) 
+            //o la unidad se ha desplazado == true, o si ha evolucionado
+            if (unidad == null || unidad.seHaDesplazadoEsteTurno || unidad.haEvolucionado) 
                 continue; //entonces continuamos con la siguiente tropa del foreach porque la actual no dara recompensa
 
             int nivel = 0;  //en caso de no tener conocimiento del nivel, que su base sea el 0

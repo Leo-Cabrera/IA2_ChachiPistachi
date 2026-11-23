@@ -174,6 +174,8 @@ public class ControlUnidades : MonoBehaviour
         datos.nivel++;  //sumamos de nivel a la tropa actual porque hemos evolucionado
         sprites.ActualizarSpriteSegunNivel();  //actualizamos el sprite segun el nivel al que hayamos evolucionado
 
+        unidadActual.haEvolucionado = true;  //se cambia a true porque inicialmente estaba en false
+
         //la evolución consume la acción de esta tropa, asi que no gana monedas aunque este en el mismo lugar y tampoco se mueve
         unidadActual.yaSeHaMovido = true;
         unidadActual.puntosMovimientoRestantes = 0;

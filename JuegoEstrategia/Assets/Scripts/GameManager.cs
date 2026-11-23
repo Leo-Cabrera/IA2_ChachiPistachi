@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     private bool turnoJugador = true;
     public GameObject btnSigTurno;
+    [SerializeField] private GameObject btnEvolucionar;
     public GameObject textoPensando;
     public GameObject textoMovRestantes;
     [SerializeField] private TextMeshProUGUI textoMonedas;
@@ -84,6 +85,11 @@ public class GameManager : MonoBehaviour
         if (!turnoJugador)
         {
             temporizador.IniciarTemporizador();
+        }
+
+        if (btnEvolucionar != null)  //mientras el boton este asignado
+        {
+            btnEvolucionar.SetActive(turnoJugador);  //que solo aparezca en el turno del jugador 
         }
     }
 

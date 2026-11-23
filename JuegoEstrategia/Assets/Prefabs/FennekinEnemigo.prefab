@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StayStill
   actionName: StayStill
-  cost: 1
+  cost: 0.5
   duration: 0
   preConditions:
   - key: turnoIntacto
@@ -273,6 +273,7 @@ MonoBehaviour:
   puntosMovimientoRestantes: 1
   puntosMovimientoMaximos: 1
   yaSeHaMovido: 0
+  seHaDesplazadoEsteTurno: 0
   datosTropa: {fileID: 9068554545330127156}
 --- !u!212 &3125106428952465553
 SpriteRenderer:

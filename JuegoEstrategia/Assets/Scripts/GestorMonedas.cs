@@ -29,7 +29,27 @@ public class GestorMonedas: MonoBehaviour
             return monedasJugador;
 
         return monedasIA;
-    } 
+    }
+
+    public bool GastarMonedas(bool esJugador, int coste)  //asi podremos usar esto tanto al comprar tropas como evoluciones
+    {
+        //primero comprobamos si el equipo puede pagar el coste que haya
+        if (coste <= 0 || ObtenerMonedas(esJugador) < coste)  //si el coste es negativo (para evitar errores) o no tenemos suficiente dinero
+        {
+            return false;  //salimos del metodo con false porque no se pueden gastar el dinero
+        }
+
+        if (esJugador)  //si esjugador = true 
+        {
+            monedasJugador -= coste;  //el gasto lo esta haciendo el jugador asi que descontamos de su monto lo que se gaste
+        }
+        else  //sino es la IA
+        {
+            monedasIA -= coste;  //descontamos de su monto 
+        }
+
+        return true;  //cerramos el metodo con true porque se habra hecho el pago 
+    }
 
     public void RecompensarTropasQuietas(List<UnidadHex> tropas, bool esJugador)
     {

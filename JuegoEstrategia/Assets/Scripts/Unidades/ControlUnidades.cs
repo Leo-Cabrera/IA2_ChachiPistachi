@@ -132,6 +132,62 @@ public class ControlUnidades : MonoBehaviour
         }
     }
 
+    public void Evolucionar()
+    {
+        //solo podemos evolucionar una tropa propia seleccionada, que no se este moviendo durante nuestro turno, no durante el de la IA
+        if (!GameManager.instance.TurnoJugador() || movimientoEnCurso ||
+            !unidadSeleccionada || unidadActual == null || !unidadActual.esJugador)
+        {
+            return;
+        }
+
+        DatosTropa datos = unidadActual.datosTropa; //guardamos la referencia de los datos de la tropa
+
+        //guardamos la referencia del componente CambiarSprites, la necesitaremos para poder cambiar el render
+        CambiarSprites sprites = unidadActual.GetComponent<CambiarSprites>();
+
+        //Si falta algún componente necesario o la unidad ya está en nivel 2, el método termina sin gastar monedas
+        if (datos == null || sprites == null || gestorMonedas == null ||
+            datos.nivel < 0 || datos.nivel >= 2)
+        {
+            return;
+        }
+
+        //vamos a comprobar que haya una siguiente forma, si el pokemon es de nivel 0 con su sprite inicial,
+        //el siguiente que se vera sera sprite2, sino, no es nivel 0 pues el siguiente sera sprite3. 
+        Sprite siguiente = datos.nivel == 0 ? sprites.sprite2 : sprites.sprite3;
+
+        //para comprobar que siguiente apunta a un sprite asignado, si no hay sprite es null y no cobramos
+        if (siguiente == null)
+        {
+            Debug.LogWarning("Falta el sprite de la siguiente evolución.");
+            return;
+        }
+
+        //si no tenemos monedas suficientes para pagar la evolucion (5 monedas)
+        if (!gestorMonedas.GastarMonedas(unidadActual.esJugador, 5))
+        {
+            Debug.Log("No hay monedas suficientes para evolucionar.");
+            return;
+        }
+
+        datos.nivel++;  //sumamos de nivel a la tropa actual porque hemos evolucionado
+        sprites.ActualizarSpriteSegunNivel();  //actualizamos el sprite segun el nivel al que hayamos evolucionado
+
+        //la evolución consume la acción de esta tropa, asi que no gana monedas aunque este en el mismo lugar y tampoco se mueve
+        unidadActual.yaSeHaMovido = true;
+        unidadActual.puntosMovimientoRestantes = 0;
+
+        unidadSeleccionada = false;  //ya no se podra seleccionar
+        LimpiarPuntosMovimiento();  //quitamos los marcadores de las casillas a las que podiamos ir
+        unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);  //apagamos el brillo de seleccion
+        ActualizarColorUnidad(unidadActual);  //enseñamos la tropa en gris
+        ActualizarTextoPuntos();  //actualizamos los puntos en los que podemos movernos que ahora seran 0
+
+        //en el próximo turno, recuperará movimiento según su nuevo nivel
+        unidadesAliadasReiniciadas = false;
+    }
+
     private IEnumerator EsperarMapa()
     {
         yield return new WaitUntil(

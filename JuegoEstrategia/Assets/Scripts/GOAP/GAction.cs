@@ -57,7 +57,7 @@ public abstract class GAction : MonoBehaviour
         agent = GetComponent<GAgent>();
     }
 
-    public bool IsAchievable()
+    public virtual bool IsAchievable()
     {
         return true;
     }

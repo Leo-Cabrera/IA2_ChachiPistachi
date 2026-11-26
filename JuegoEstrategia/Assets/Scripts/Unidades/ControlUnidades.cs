@@ -146,7 +146,7 @@ public class ControlUnidades : MonoBehaviour
         //guardamos la referencia del componente CambiarSprites, la necesitaremos para poder cambiar el render
         CambiarSprites sprites = unidadActual.GetComponent<CambiarSprites>();
 
-        //Si falta algún componente necesario o la unidad ya está en nivel 2, el método termina sin gastar monedas
+        //Si falta algï¿½n componente necesario o la unidad ya estï¿½ en nivel 2, el mï¿½todo termina sin gastar monedas
         if (datos == null || sprites == null || gestorMonedas == null ||
             datos.nivel < 0 || datos.nivel >= 2)
         {
@@ -160,7 +160,7 @@ public class ControlUnidades : MonoBehaviour
         //para comprobar que siguiente apunta a un sprite asignado, si no hay sprite es null y no cobramos
         if (siguiente == null)
         {
-            Debug.LogWarning("Falta el sprite de la siguiente evolución.");
+            Debug.LogWarning("Falta el sprite de la siguiente evoluciï¿½n.");
             return;
         }
 
@@ -175,18 +175,19 @@ public class ControlUnidades : MonoBehaviour
         sprites.ActualizarSpriteSegunNivel();  //actualizamos el sprite segun el nivel al que hayamos evolucionado
 
         unidadActual.haEvolucionado = true;  //se cambia a true porque inicialmente estaba en false
+        unidadActual.RegistrarAccionGOAP(false);
 
-        //la evolución consume la acción de esta tropa, asi que no gana monedas aunque este en el mismo lugar y tampoco se mueve
+        //la evoluciï¿½n consume la acciï¿½n de esta tropa, asi que no gana monedas aunque este en el mismo lugar y tampoco se mueve
         unidadActual.yaSeHaMovido = true;
         unidadActual.puntosMovimientoRestantes = 0;
 
         unidadSeleccionada = false;  //ya no se podra seleccionar
         LimpiarPuntosMovimiento();  //quitamos los marcadores de las casillas a las que podiamos ir
         unidadActual.GetComponent<GlowUnidad>()?.SetGlow(false);  //apagamos el brillo de seleccion
-        ActualizarColorUnidad(unidadActual);  //enseñamos la tropa en gris
+        ActualizarColorUnidad(unidadActual);  //enseï¿½amos la tropa en gris
         ActualizarTextoPuntos();  //actualizamos los puntos en los que podemos movernos que ahora seran 0
 
-        //en el próximo turno, recuperará movimiento según su nuevo nivel
+        //en el prï¿½ximo turno, recuperarï¿½ movimiento segï¿½n su nuevo nivel
         unidadesAliadasReiniciadas = false;
     }
 
@@ -366,6 +367,11 @@ public class ControlUnidades : MonoBehaviour
         unidad.coordenadaX = destino.coordenadaX;
         unidad.coordenadaY = destino.coordenadaY;
 
+        if (unidad.esJugador)
+        {
+            unidad.RegistrarAccionGOAP(false);
+        }
+
         // NUEVO: descontamos el coste real del terreno.
         unidad.puntosMovimientoRestantes -= costeMovimiento;
 
@@ -478,6 +484,7 @@ public class ControlUnidades : MonoBehaviour
             TerminarTurnoEnemigo();
     }
 
+    
     private void TerminarTurnoEnemigo()
     {
         if (!turnoEnemigoEnCurso)
@@ -488,6 +495,7 @@ public class ControlUnidades : MonoBehaviour
 
         GameManager.instance.CambiarTurno();
     }
+
 
     private void ReiniciarUnidadesAliadas()
     {
@@ -507,6 +515,9 @@ public class ControlUnidades : MonoBehaviour
             unidad.puntosMovimientoRestantes = presupuesto;
             unidad.yaSeHaMovido = false;
             unidad.seHaDesplazadoEsteTurno = false;
+
+            // Reiniciar el registro de recompensas del jugador.
+            unidad.ReiniciarRegistroAccionesGOAP();
 
             ActualizarColorUnidad(unidad);
         }
@@ -552,5 +563,12 @@ public class ControlUnidades : MonoBehaviour
         sr.color = unidad.yaSeHaMovido
             ? Color.gray
             : Color.white;
+    }
+
+    public void PrepararSiguienteTurnoJugador()
+    {
+        // Fuerza el reinicio de las tropas aliadas cuando termine
+        // el turno del jugador y comience el de la IA.
+        unidadesAliadasReiniciadas = false;
     }
 }

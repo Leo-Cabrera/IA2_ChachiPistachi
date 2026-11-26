@@ -2171,6 +2171,8 @@ MonoBehaviour:
   textoPensando: {fileID: 1657913296}
   textoMovRestantes: {fileID: 192775753}
   textoMonedas: {fileID: 225873483}
+  textoMonedasJugador: {fileID: 0}
+  textoMonedasIA: {fileID: 0}
   temporizador: {fileID: 1693044822}
   empezarAccionEnemiga: 0
 --- !u!4 &1693044824

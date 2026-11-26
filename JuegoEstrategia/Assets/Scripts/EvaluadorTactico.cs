@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -17,21 +16,29 @@ public class EvaluadorTactico : MonoBehaviour
     [Header("Debug")]
     public bool debugCostes = false;
 
-    // Compara todos los objetivos posibles.
+
+    // =========================================================
+    // APROXIMACIÓN A ENEMIGOS
+    // =========================================================
+
     public List<HexTile> ElegirRuta(
         UnidadHex enemigo,
         List<UnidadHex> objetivos)
     {
-        if (enemigo == null || objetivos == null || objetivos.Count == 0) {
+        if (enemigo == null ||
+            objetivos == null ||
+            objetivos.Count == 0)
+        {
             return new List<HexTile>();
         }
 
-        HexTile casillaEnemigo =
-            grid.ObtenerCasilla(enemigo.coordenadaX, enemigo.coordenadaY);
+        HexTile casillaEnemigo = grid.ObtenerCasilla(
+            enemigo.coordenadaX,
+            enemigo.coordenadaY
+        );
 
-        if (casillaEnemigo == null) {
+        if (casillaEnemigo == null)
             return new List<HexTile>();
-        }
 
         Dictionary<HexTile, float> alcanzables =
             movimiento.CalcularCasillasAlcanzables(
@@ -40,28 +47,18 @@ public class EvaluadorTactico : MonoBehaviour
             );
 
         if (alcanzables.Count == 0)
-        {
             return new List<HexTile>();
-        }
 
         HexTile mejorCasilla = null;
         UnidadHex mejorObjetivo = null;
 
         float mejorPuntuacion = float.MinValue;
-
-        // Evaluamos también la posición actual.
-        // Así podemos saber si realmente merece la pena moverse.
-
         float puntuacionActual = float.MinValue;
 
         foreach (UnidadHex objetivo in objetivos)
         {
-            if (objetivo == null) continue;
-
-            HexTile casillaObjetivo =
-                grid.ObtenerCasilla(objetivo.coordenadaX, objetivo.coordenadaY);
-
-            if (casillaObjetivo == null) continue;
+            if (objetivo == null)
+                continue;
 
             float puntuacion = PuntuarCasilla(
                 casillaEnemigo,
@@ -74,28 +71,19 @@ public class EvaluadorTactico : MonoBehaviour
                 puntuacionActual = puntuacion;
         }
 
-        // Evaluamos todas las casillas alcanzables
-        // frente a todos los objetivos.
-
         foreach (var par in alcanzables)
         {
             HexTile casilla = par.Key;
 
-            if (casilla == casillaEnemigo) continue;
+            if (casilla == casillaEnemigo)
+                continue;
 
             float coste = par.Value;
 
             foreach (UnidadHex objetivo in objetivos)
             {
-                if (objetivo == null) continue;
-
-                HexTile casillaObjetivo =
-                    grid.ObtenerCasilla(
-                        objetivo.coordenadaX,
-                        objetivo.coordenadaY
-                    );
-
-                if (casillaObjetivo == null) continue;
+                if (objetivo == null)
+                    continue;
 
                 float puntuacion = PuntuarCasilla(
                     casilla,
@@ -120,72 +108,133 @@ public class EvaluadorTactico : MonoBehaviour
         }
 
         if (mejorCasilla == null)
-        {
             return new List<HexTile>();
-        }
 
-        // Evitamos movernos si la posición actual es mejor.
         if (mejorPuntuacion <= puntuacionActual + 0.05f)
         {
-            Debug.Log("[IA] Se moverá igualmente para probar la ruta."); //ARREGLO TEMPORAL
+            Debug.Log(
+                "[IA] Se moverá igualmente para probar la ruta."
+            );
         }
 
-        // if (mejorPuntuacion <= puntuacionActual + 0.05f)
-        // {
-        //     if (debugCostes)
-        //     {
-        //         Debug.Log(
-        //             "[IA] Se queda quieto. " +
-        //             "Actual: " + puntuacionActual.ToString("F2") +
-        //             " Mejor: " + mejorPuntuacion.ToString("F2") +
-        //             " Casilla: " +
-        //             (mejorCasilla != null
-        //                 ? mejorCasilla.coordenadaX + "," + mejorCasilla.coordenadaY
-        //                 : "NULL")
-        //         );
-        //     }
-
-        //     Debug.LogError("[PRUEBA 6] Salgo porque mejorPuntuacion <= puntuacionActual + 0.05f");
-
-        //     return new List<HexTile>();
-        // }
-
-        HexTile casillaInicial = grid.ObtenerCasilla(
-            enemigo.coordenadaX,
-            enemigo.coordenadaY
-        );
-
         List<HexTile> ruta = movimiento.CalcularRuta(
-            casillaInicial,
+            casillaEnemigo,
             mejorCasilla,
             enemigo
         );
 
         return ruta;
+    }
 
-        if (debugCostes)
+
+    // =========================================================
+    // NUEVO: BÚSQUEDA DE MONEDAS
+    // =========================================================
+
+    public List<HexTile> ElegirRutaHaciaMoneda(
+        UnidadHex unidad,
+        out HexTile monedaObjetivo)
+    {
+        monedaObjetivo = null;
+
+        if (unidad == null ||
+            grid == null ||
+            movimiento == null)
         {
-            string r = "";
+            return new List<HexTile>();
+        }
 
+        HexTile casillaInicial = grid.ObtenerCasilla(
+            unidad.coordenadaX,
+            unidad.coordenadaY
+        );
+
+        if (casillaInicial == null)
+            return new List<HexTile>();
+
+        HexTile[,] todasLasCasillas =
+            grid.ObtenerTodasLasCasillas();
+
+        if (todasLasCasillas == null)
+            return new List<HexTile>();
+
+        List<HexTile> mejorRuta = new List<HexTile>();
+
+        float menorCoste = float.MaxValue;
+
+        foreach (HexTile casilla in todasLasCasillas)
+        {
+            if (casilla == null ||
+                casilla.monedaEnCasilla == null ||
+                !casilla.esTransitable)
+            {
+                continue;
+            }
+
+            // Si la unidad ya está en la casilla de la moneda.
+            if (casilla == casillaInicial)
+            {
+                monedaObjetivo = casilla;
+                return new List<HexTile> { casillaInicial };
+            }
+
+            // Calculamos la ruta A* hasta la moneda.
+            List<HexTile> ruta = movimiento.CalcularRuta(
+                casillaInicial,
+                casilla,
+                unidad
+            );
+
+            if (ruta == null || ruta.Count <= 1)
+                continue;
+
+            float costeRuta = 0f;
+
+            // Calculamos el coste completo de la ruta.
             for (int i = 1; i < ruta.Count; i++)
             {
-                r += " -> (" +
-                    ruta[i].coordenadaX + "," +
-                    ruta[i].coordenadaY + ")" +
-                    ruta[i].tipoTerreno +
-                    "[" +
-                    movimiento.pesosTerreno.ObtenerCoste(
-                        enemigo.datosTropa,
-                        ruta[i].tipoTerreno
-                    ) +
-                    "]";
+                int coste = movimiento.pesosTerreno.ObtenerCoste(
+                    unidad.datosTropa,
+                    ruta[i].tipoTerreno
+                );
+
+                if (coste <= 0)
+                {
+                    costeRuta = float.MaxValue;
+                    break;
+                }
+
+                costeRuta += coste;
+            }
+
+            if (costeRuta < menorCoste)
+            {
+                menorCoste = costeRuta;
+                mejorRuta = ruta;
+                monedaObjetivo = casilla;
             }
         }
 
-        return ruta;
+        if (monedaObjetivo == null)
+            return new List<HexTile>();
+
+        if (debugCostes)
+        {
+            Debug.Log(
+                "[Farming] Moneda elegida en (" +
+                monedaObjetivo.coordenadaX + "," +
+                monedaObjetivo.coordenadaY +
+                "). Coste total: " + menorCoste
+            );
+        }
+
+        return mejorRuta;
     }
 
-    // Puntuación de una posición respecto a un objetivo.
+
+    // =========================================================
+    // PUNTUACIÓN TÁCTICA
+    // =========================================================
 
     public float PuntuarCasilla(
         HexTile casilla,
@@ -198,21 +247,13 @@ public class EvaluadorTactico : MonoBehaviour
 
         float puntuacion = 0f;
 
-        // 1. Distancia al objetivo.
-
-        puntuacion -= DistanciaHex(casilla, objetivo) * pesoDistancia;
-
-        // 2. Coste de movimiento necesario para llegar.
+        puntuacion -= DistanciaHex(casilla, objetivo) *
+                      pesoDistancia;
 
         puntuacion -= coste * pesoCoste;
 
-        // 3. Peligro de la posición.
-
-        puntuacion -= CalcularPeligro(casilla, enemigo) * pesoPeligro;
-
-        // 4. Afinidad del terreno donde termina el movimiento.
-        // Favorito = +1
-        // Neutral = 0
+        puntuacion -= CalcularPeligro(casilla, enemigo) *
+                      pesoPeligro;
 
         int afinidadCasilla =
             movimiento.pesosTerreno.ObtenerAfinidad(
@@ -224,14 +265,10 @@ public class EvaluadorTactico : MonoBehaviour
 
         puntuacion += ventajaCasilla * pesoVentajaTerreno;
 
-        // 5. Afinidad del terreno donde se encuentra el objetivo.
-        // Esto ayuda a elegir entre dos jugadores equidistantes.
-
-        HexTile casillaObjetivo =
-            grid.ObtenerCasilla(
-                objetivo.coordenadaX,
-                objetivo.coordenadaY
-            );
+        HexTile casillaObjetivo = grid.ObtenerCasilla(
+            objetivo.coordenadaX,
+            objetivo.coordenadaY
+        );
 
         if (casillaObjetivo != null)
         {
@@ -243,13 +280,13 @@ public class EvaluadorTactico : MonoBehaviour
 
             float ventajaObjetivo = afinidadObjetivo - 1;
 
-            puntuacion += ventajaObjetivo * pesoTerrenoObjetivo;
+            puntuacion += ventajaObjetivo *
+                          pesoTerrenoObjetivo;
         }
 
         return puntuacion;
     }
 
-    // Desempate estable.
 
     private bool EsMejor(
         HexTile candidata,
@@ -259,7 +296,8 @@ public class EvaluadorTactico : MonoBehaviour
         UnidadHex objetivoActual,
         float mejorPuntuacion)
     {
-        if (actual == null) return true;
+        if (actual == null)
+            return true;
 
         const float epsilon = 0.001f;
 
@@ -284,36 +322,44 @@ public class EvaluadorTactico : MonoBehaviour
         if (candidata.coordenadaY != actual.coordenadaY)
             return candidata.coordenadaY < actual.coordenadaY;
 
-        // Último desempate por coordenadas del objetivo.
+        if (objetivoCandidato.coordenadaX !=
+            objetivoActual.coordenadaX)
+        {
+            return objetivoCandidato.coordenadaX <
+                   objetivoActual.coordenadaX;
+        }
 
-        if (objetivoCandidato.coordenadaX != objetivoActual.coordenadaX)
-            return objetivoCandidato.coordenadaX < objetivoActual.coordenadaX;
-
-        return objetivoCandidato.coordenadaY < objetivoActual.coordenadaY;
+        return objetivoCandidato.coordenadaY <
+               objetivoActual.coordenadaY;
     }
 
-    // Calcula el peligro de una casilla.
 
-    public float CalcularPeligro(HexTile casilla, UnidadHex unidad)
+    public float CalcularPeligro(
+        HexTile casilla,
+        UnidadHex unidad)
     {
-        List<HexTile> vecinas = movimiento.ObtenerVecinas(casilla);
+        List<HexTile> vecinas =
+            movimiento.ObtenerVecinas(casilla);
 
-        if (vecinas.Count == 0) return 1f;
+        if (vecinas.Count == 0)
+            return 1f;
 
         float peligro = 0f;
 
         foreach (HexTile v in vecinas)
         {
-            if (!v.esTransitable || movimiento.EstaOcupada(v, unidad))
+            if (!v.esTransitable ||
+                movimiento.EstaOcupada(v, unidad))
             {
                 peligro += 1f;
                 continue;
             }
 
-            int coste = movimiento.pesosTerreno.ObtenerCoste(
-                unidad.datosTropa,
-                v.tipoTerreno
-            );
+            int coste =
+                movimiento.pesosTerreno.ObtenerCoste(
+                    unidad.datosTropa,
+                    v.tipoTerreno
+                );
 
             if (coste <= 0)
             {
@@ -327,23 +373,27 @@ public class EvaluadorTactico : MonoBehaviour
         return peligro / vecinas.Count;
     }
 
-    // Distancia hexagonal.
 
     public int DistanciaHex(HexTile a, UnidadHex b)
     {
-        if (a == null || b == null) return 999;
+        if (a == null || b == null)
+            return 999;
 
         HexTile c = grid.ObtenerCasilla(
             b.coordenadaX,
             b.coordenadaY
         );
 
-        if (c == null) return 999;
+        if (c == null)
+            return 999;
 
         return DistanciaHexEntreCasillas(a, c);
     }
 
-    private int DistanciaHexEntreCasillas(HexTile a, HexTile b)
+
+    private int DistanciaHexEntreCasillas(
+        HexTile a,
+        HexTile b)
     {
         int aq = a.coordenadaX;
         int ar = a.coordenadaY -

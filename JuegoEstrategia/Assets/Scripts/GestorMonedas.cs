@@ -1,172 +1,258 @@
+
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
-public class GestorMonedas: MonoBehaviour
+public class GestorMonedas : MonoBehaviour
 {
-    public HexGrid grid;  //la usaremos para guardar la referencia de nuestro mapa
-    public MovimientoHex movimiento;  //para saber si sera una casilla a la que pueda moverse el personaje 
-    public GameObject moneda;  //guardarmeos el modelo de la moneda
+    public event Action OnMonedasActualizadas;
 
-    //contadores de las monedas de cada uno
+    [Header("Referencias")]
+    public HexGrid grid;
+    public MovimientoHex movimiento;
+    public GameObject moneda;
+
+    [Header("Monedas de los equipos")]
     [SerializeField] private int monedasJugador = 0;
     [SerializeField] private int monedasIA = 0;
 
-    //los vamos a usar para delimitar la zona donde pueden aparecer las monedas
+    [Header("Zona de apariciÃ³n")]
     [SerializeField] private int columnaMinima = 8;
     [SerializeField] private int columnaMaxima = 19;
     [SerializeField] private int filaMinima = 9;
     [SerializeField] private int filaMaxima = 11;
-    [SerializeField] private int monedasPorTanda = 5;  //para poder editar el valor desde el inspector de cuantas monedas quiero que aparezcan
+    [SerializeField] private int monedasPorTanda = 5;
 
-    private GameObject monedaCreada; //guardar la referencia de la moneda que se cree
+    private GameObject monedaCreada;
+    private int monedasEnMapa = 0;
 
-    private int monedasEnMapa = 0; //cuenta las monedas que siguen en el tablero
-
-    //devuelve el saldo del equipo que tenga el turno 
     public int ObtenerMonedas(bool esJugador)
     {
+        return esJugador ? monedasJugador : monedasIA;
+    }
+
+    private void NotificarCambioMonedas()
+    {
+        OnMonedasActualizadas?.Invoke();
+    }
+
+    public bool GastarMonedas(bool esJugador, int coste)
+    {
+        if (coste <= 0 || ObtenerMonedas(esJugador) < coste)
+            return false;
+
         if (esJugador)
-            return monedasJugador;
-
-        return monedasIA;
-    }
-
-    public bool GastarMonedas(bool esJugador, int coste)  //asi podremos usar esto tanto al comprar tropas como evoluciones
-    {
-        //primero comprobamos si el equipo puede pagar el coste que haya
-        if (coste <= 0 || ObtenerMonedas(esJugador) < coste)  //si el coste es negativo (para evitar errores) o no tenemos suficiente dinero
-        {
-            return false;  //salimos del metodo con false porque no se pueden gastar el dinero
-        }
-
-        if (esJugador)  //si esjugador = true 
-        {
-            monedasJugador -= coste;  //el gasto lo esta haciendo el jugador asi que descontamos de su monto lo que se gaste
-        }
-        else  //sino es la IA
-        {
-            monedasIA -= coste;  //descontamos de su monto 
-        }
-
-        return true;  //cerramos el metodo con true porque se habra hecho el pago 
-    }
-
-    public void RecompensarTropasQuietas(List<UnidadHex> tropas, bool esJugador)
-    {
-        int recompensa = 0;  //empieza en 0 cada vez que se llama al metodo asi terminaremos con una cantidad y borraremos al siguiente turno
-
-        foreach (UnidadHex unidad in tropas)  //por cada unidad que tenemos en la lista de tropas
-        {
-            //si la unidad esta vacia (hemos puesto en la lista que hay mas de las que hay en el mapa, para que las pruebes no den error)
-            //o la unidad se ha desplazado == true, o si ha evolucionado
-            if (unidad == null || unidad.seHaDesplazadoEsteTurno || unidad.haEvolucionado) 
-                continue; //entonces continuamos con la siguiente tropa del foreach porque la actual no dara recompensa
-
-            int nivel = 0;  //en caso de no tener conocimiento del nivel, que su base sea el 0
-            if (unidad.datosTropa != null)  //mientras tengamos la tropa tenga datos
-                nivel = unidad.datosTropa.nivel;  //cambiamos la variable nivel, por el nivel de la tropa (las evoluciones)
-
-            //lo de mathclamp es para que use el nivel si esta entre 0 y 2, asi evitamos problemas. Si es nivel 0 entonces a la recompensa
-            //le sumaremos nivel +1, asi que 0 +1, dandonos asi una moneda si eres de nivel 0
-            recompensa += Mathf.Clamp(nivel, 0, 2) + 1;
-        }
-
-        if (esJugador) //si de quien hemos hecho las comprobaciones es el jugador
-            monedasJugador += recompensa;  //sumamos al contador de las monedas del jugador
+            monedasJugador -= coste;
         else
-            monedasIA += recompensa;  //lo mismo si es la IA
+            monedasIA -= coste;
+
+        NotificarCambioMonedas();
+        return true;
+    }
+
+    public void RecompensarTropasQuietas(
+        List<UnidadHex> tropas,
+        bool esJugador)
+    {
+        if (tropas == null)
+            return;
+
+        int recompensaTotal = 0;
+
+        foreach (UnidadHex unidad in tropas)
+        {
+            if (unidad == null)
+                continue;
+
+            // El jugador no ejecuta StayStill.
+            // Para Ã©l, basta con no haber realizado ninguna otra acciÃ³n.
+            if (esJugador)
+            {
+                if (!unidad.PuedeRecibirRecompensaPorQuedarseQuietoJugador())
+                    continue;
+            }
+            else
+            {
+                // La IA conserva su comprobaciÃ³n original.
+                if (!unidad.PuedeRecibirRecompensaStayStill())
+                    continue;
+            }
+
+            int nivel = unidad.datosTropa != null
+                ? unidad.datosTropa.nivel
+                : 0;
+
+            int recompensaUnidad = Mathf.Clamp(nivel, 0, 2) + 1;
+
+            recompensaTotal += recompensaUnidad;
+
+            unidad.haRecibidoRecompensaStayStillEsteTurno = true;
+
+            string nombre = unidad.datosTropa != null
+                ? unidad.datosTropa.nombreTropa
+                : unidad.name;
+
+            Debug.Log(
+                "[RECOMPENSA TURNO QUIETO] " +
+                nombre + " recibe " +
+                recompensaUnidad + " monedas."
+            );
+        }
+
+        if (recompensaTotal <= 0)
+            return;
+
+        if (esJugador)
+            monedasJugador += recompensaTotal;
+        else
+            monedasIA += recompensaTotal;
+
+        NotificarCambioMonedas();
+
+        Debug.Log(
+            "[MONEDAS] " +
+            (esJugador ? "Jugador" : "IA") +
+            " recibe " + recompensaTotal +
+            " monedas. Saldo jugador: " +
+            monedasJugador +
+            " | Saldo IA: " +
+            monedasIA
+        );
     }
 
     public void ColocarMoneda()
     {
-        //para comprobar que hemos asignaddo cosas en el inspector antes de continuar
         if (grid == null || movimiento == null || moneda == null)
         {
-            Debug.LogError("Faltan referencias en GestorMonedas.");
+            Debug.LogError(
+                "Faltan referencias en GestorMonedas."
+            );
             return;
         }
 
-        List<HexTile> disponibles = new List<HexTile>();  //lista para las tiles disponibles donde podran apaarecer moendas
+        List<HexTile> disponibles = new List<HexTile>();
 
-        for (int x = columnaMinima; x <= columnaMaxima; x++)  //que aparezcen a partir de los limites que pongamos
+        for (int x = columnaMinima; x <= columnaMaxima; x++)
         {
             for (int y = filaMinima; y <= filaMaxima; y++)
             {
-                HexTile candidata = grid.ObtenerCasilla(x, y);  //en la casilla en la que estamos gaurdamos su referencia
+                HexTile candidata = grid.ObtenerCasilla(x, y);
 
-                //que la casilla exista, que sea transitable y que esté libre (el ultimo caso devuelve true si no esta ocupada)
-                if (candidata != null && candidata.esTransitable && !movimiento.EstaOcupada(candidata, null))
+                if (candidata != null &&
+                    candidata.esTransitable &&
+                    candidata.monedaEnCasilla == null &&
+                    !movimiento.EstaOcupada(candidata, null))
                 {
-                    disponibles.Add(candidata);  //la añadimos a la lista
+                    disponibles.Add(candidata);
                 }
             }
         }
 
-        Debug.Log($"Casillas disponibles para monedas: {disponibles.Count}");
+        Debug.Log(
+            "Casillas disponibles para monedas: " +
+            disponibles.Count
+        );
 
-        //si la lista esta vacia no hay ninguna casilla disponible, no deberia de pasar tho
         if (disponibles.Count == 0)
         {
-            Debug.LogWarning("No hay casillas disponibles para colocar la moneda.");
+            Debug.LogWarning(
+                "No hay casillas disponibles para colocar monedas."
+            );
             return;
         }
 
-        //vamos a usar el metodo de unity de math.min porque asi en cantidad se guarda el minimo, o sea si tenemos disponibles 13
-        //casillas, se guardara en cantidad 5, en cambio si tenemos disponibles solo 2 casillas pues se guardara este 2 como el minimo
-        int cantidad = Mathf.Min(monedasPorTanda, disponibles.Count);
+        int cantidad = Mathf.Min(
+            monedasPorTanda,
+            disponibles.Count
+        );
 
-        for (int i = 0; i < cantidad; i++)  //hacemos el for para crear la cantidad seleccionada
+        for (int i = 0; i < cantidad; i++)
         {
-            //aleatoriamente seleccionamos una casilla disponible de la lista
-            int indice = Random.Range(0, disponibles.Count);
-            HexTile casilla = disponibles[indice];  //guardamos en casilla la casilla de la lista disponible seleccionada
+            int indice = UnityEngine.Random.Range(
+                0,
+                disponibles.Count
+            );
 
-            //crea una copia del prefab moneda y guarda la referencia de esa copia en monedacreada
+            HexTile casilla = disponibles[indice];
+
             monedaCreada = Instantiate(moneda);
-            Moneda datosMoneda = monedaCreada.GetComponent<Moneda>();  //busca el componente (script) moneda en nuestro objeto moneda
-            datosMoneda.valor = Random.Range(2, 6);  //entonces hace cambios en ese componente en la variable de valor para que sea random
-            monedasEnMapa++; //sumamos la moneda que acabamos de colocar
 
-            //mueve la copia a la posición de la casilla seleccionada con el range
-            monedaCreada.transform.position = casilla.transform.position;
-            casilla.monedaEnCasilla = monedaCreada; //así esa casilla se guarda la referencia de la moneda que tiene creada ahi
+            Moneda datosMoneda =
+                monedaCreada.GetComponent<Moneda>();
 
-            //quitamos esa casilla de la lista para que no vuelva a salir en la siguiente iteracion y en una misma haya dos monedas
+            if (datosMoneda == null)
+            {
+                Debug.LogError(
+                    "El prefab de moneda no tiene el componente Moneda."
+                );
+
+                Destroy(monedaCreada);
+                continue;
+            }
+
+            datosMoneda.valor = UnityEngine.Random.Range(2, 6);
+
+            monedasEnMapa++;
+
+            monedaCreada.transform.position =
+                casilla.transform.position;
+
+            casilla.monedaEnCasilla = monedaCreada;
+
             disponibles.RemoveAt(indice);
         }
     }
 
-    //recibe el dato de la casilla en la que se esta para ver si es casillamoneda y también el tipo de unidad (si jugador o IA)
-    public void RecogerMoneda(HexTile casillaDestino, UnidadHex unidad)  
+    public void RecogerMoneda(
+        HexTile casillaDestino,
+        UnidadHex unidad)
     {
+        if (casillaDestino == null || unidad == null)
+            return;
 
-        if (casillaDestino.monedaEnCasilla != null)  //si hay una moneda en esa casilla
+        GameObject monedaEnCasilla = casillaDestino.monedaEnCasilla;
+
+        if (monedaEnCasilla == null)
+            return;
+
+        Moneda datosMoneda =
+            monedaEnCasilla.GetComponent<Moneda>();
+
+        if (datosMoneda == null)
         {
-            //leemos el valor de la moneda antes de retirarla del mapa
-            Moneda datosMoneda = casillaDestino.monedaEnCasilla.GetComponent<Moneda>();  //busca el script de esa moneda especifica
-            int valorRecogido = datosMoneda.valor;  //del script Moneda, se queda con el valor que tenga
-
-            Destroy(casillaDestino.monedaEnCasilla);  //eliminamos la moneda que se encuentra en la casilla del jugador/IA
-            casillaDestino.monedaEnCasilla = null;  //actualizamos casillaDestino porque ya no habrá una moneda en esa casilla
-
-            //la moneda del mapa dara el saldo aleatorio que le haya tocado
-            if (unidad.esJugador == true)  //si quien ha cogido la moneda es una unidad del jugador, ya usamos el esjugador en unidadhex
-            {
-                monedasJugador += valorRecogido;  //sumamos el valor de la moneda que haya cogido
-            }
-            else  //sino habra sido la de la IA
-            {
-                monedasIA += valorRecogido;
-            }
-
-            Debug.Log($"Moneda recogida. Jugador: {monedasJugador}, IA: {monedasIA}");  //para comprobar, ya lo haremos en canva
-
-            monedasEnMapa--;
-
-            if (monedasEnMapa == 0)  //cuando ya no queden monedas en el tablero, volveremos a colocar aleatoriamente 
-            {
-                ColocarMoneda();  //utilizando esta llamada que es el metodo que crea las 5 aleatorias
-            }
+            Debug.LogWarning(
+                "La moneda de la casilla no tiene componente Moneda."
+            );
+            return;
         }
+
+        int valorRecogido = datosMoneda.valor;
+
+        // Liberamos la casilla antes de destruir el objeto.
+        casillaDestino.monedaEnCasilla = null;
+
+        Destroy(monedaEnCasilla);
+
+        if (unidad.esJugador)
+            monedasJugador += valorRecogido;
+        else
+            monedasIA += valorRecogido;
+
+        monedasEnMapa = Mathf.Max(0, monedasEnMapa - 1);
+
+        NotificarCambioMonedas();
+
+        Debug.Log(
+            "[MONEDA RECOGIDA] " +
+            unidad.name +
+            " recoge " + valorRecogido +
+            " monedas. Saldo jugador: " +
+            monedasJugador +
+            " | Saldo IA: " +
+            monedasIA
+        );
+
+        if (monedasEnMapa == 0)
+            ColocarMoneda();
     }
 }

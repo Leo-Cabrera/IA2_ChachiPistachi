@@ -1,9 +1,7 @@
-
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-// NUEVO: representa un objetivo que el agente puede perseguir.
 public class SubGoal
 {
     public Dictionary<string, int> sgoals;
@@ -16,6 +14,7 @@ public class SubGoal
         remove = r;
     }
 }
+
 
 public class GAgent : MonoBehaviour
 {
@@ -55,12 +54,12 @@ public class GAgent : MonoBehaviour
                 actions.Add(a);
         }
 
-        //temporal mientras solo hay 1 unidad
         unitIndex = GWorld.Instance.AddUnitAndGetIndex(gameObject);
+
         beliefs = new WorldStates();
         beliefs.SetState("turnoIntacto", 1);
-
     }
+
 
     private void CompleteAction()
     {
@@ -83,6 +82,7 @@ public class GAgent : MonoBehaviour
         }
     }
 
+
     private void LateUpdate()
     {
         if (turnFinished)
@@ -94,7 +94,7 @@ public class GAgent : MonoBehaviour
             return;
         }
 
-        // Esperamos a que termine la acción que se está ejecutando.
+        // Esperamos a que termine la acción actual.
         if (currentAction != null && currentAction.running)
         {
             if (currentAction.finished && !invoke)
@@ -106,13 +106,14 @@ public class GAgent : MonoBehaviour
             return;
         }
 
+        // Si se han agotado los puntos, termina el turno.
         if (unidad.puntosMovimientoRestantes <= 0)
         {
             FinishTurn();
             return;
         }
 
-        // Si ya no quedan acciones en el plan, comprobamos el resultado.
+        // Si no quedan acciones en el plan, comprobamos el objetivo.
         if (actionQueue != null && actionQueue.Count == 0)
         {
             if (currentGoal != null &&
@@ -134,20 +135,26 @@ public class GAgent : MonoBehaviour
 
             if (currentAction.PrePerform())
             {
+                // REGISTRO CENTRALIZADO DE ACCIONES.
+                // No depende de las condiciones del Inspector.
+                bool esStayStill = currentAction is StayStill;
+
+                unidad.RegistrarAccionGOAP(esStayStill);
+
                 currentAction.running = true;
                 currentAction.finished = false;
+
                 currentAction.IniciateAction();
             }
             else
             {
-                // NUEVO: si una acción no puede empezar, se termina el turno.
-                // Evita entrar en ciclos de planificación.
                 currentAction = null;
                 actionQueue = null;
                 FinishTurn();
             }
         }
     }
+
 
     public void StartTurn()
     {
@@ -176,11 +183,16 @@ public class GAgent : MonoBehaviour
 
         CancelInvoke();
 
+        // Reiniciamos el registro de acciones para este turno.
+        unidad.ReiniciarRegistroAccionesGOAP();
+
         beliefs.SetState("turnoIntacto", 1);
+
         RefreshBeliefs();
 
         PlanTurn();
     }
+
 
     private void PlanTurn()
     {
@@ -191,14 +203,12 @@ public class GAgent : MonoBehaviour
 
         planner = new GPlanner();
 
-        // NUEVO: mezclamos el orden de los objetivos.
-        // Así el NPC no elige siempre la misma alternativa.
-
-        //Leo:arreglo hecho siguiendo la misma logica pero solo barajando los de misma prioridad
+        // Conservamos las prioridades de cada tropa.
+        // Solo aleatorizamos los objetivos con igual prioridad.
         List<SubGoal> availableGoals = goals.Keys
-        .OrderByDescending(g => goals[g])
-        .ThenBy(g => Random.value)
-        .ToList();
+            .OrderByDescending(g => goals[g])
+            .ThenBy(g => Random.value)
+            .ToList();
 
         foreach (SubGoal sg in availableGoals)
         {
@@ -207,8 +217,6 @@ public class GAgent : MonoBehaviour
             if (actionQueue != null && actionQueue.Count > 0)
             {
                 currentGoal = sg;
-                //Debug.Log("Objetivo elegido por " + unidad.datosTropa.nombreTropa +
-                //          " (prioridad " + goals[sg] + ")");
                 break;
             }
         }
@@ -216,6 +224,7 @@ public class GAgent : MonoBehaviour
         if (actionQueue == null || actionQueue.Count == 0)
             FinishTurn();
     }
+
 
     private void FinishTurn()
     {
@@ -226,18 +235,19 @@ public class GAgent : MonoBehaviour
 
         CancelInvoke();
 
-
         OnTurnFinished?.Invoke(this);
     }
+
 
     public void RefreshBeliefs()
     {
         int pm = unidad.puntosMovimientoRestantes;
-        beliefs.SetState("puntosMovimiento", pm);
-        // claves booleanas por presencia, como hace tu ModifyState con <= 0
-        if (pm > 0) beliefs.SetState("puedeMoverse", 1);
-        else beliefs.RemoveState("puedeMoverse");
 
-        
+        beliefs.SetState("puntosMovimiento", pm);
+
+        if (pm > 0)
+            beliefs.SetState("puedeMoverse", 1);
+        else
+            beliefs.RemoveState("puedeMoverse");
     }
 }

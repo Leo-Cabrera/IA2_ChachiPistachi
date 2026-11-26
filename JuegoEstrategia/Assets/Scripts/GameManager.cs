@@ -1,19 +1,30 @@
+
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+
     private bool turnoJugador = true;
+
     public GameObject btnSigTurno;
+
     [SerializeField] private GameObject btnEvolucionar;
+
     public GameObject textoPensando;
     public GameObject textoMovRestantes;
+
+    [Header("Contadores de monedas")]
     [SerializeField] private TextMeshProUGUI textoMonedas;
+    [SerializeField] private TextMeshProUGUI textoMonedasJugador;
+    [SerializeField] private TextMeshProUGUI textoMonedasIA;
+
     public Temporizador temporizador;
+
     [HideInInspector] public bool empezarAccionEnemiga = false;
 
+    private GestorMonedas gestorMonedas;
 
     private void Awake()
     {
@@ -29,7 +40,35 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        BuscarGestorMonedas();
         ActualizarInterfaz();
+        ActualizarContadoresMonedas();
+    }
+
+    private void OnEnable()
+    {
+        if (gestorMonedas != null)
+            gestorMonedas.OnMonedasActualizadas += ActualizarContadoresMonedas;
+    }
+
+    private void OnDisable()
+    {
+        if (gestorMonedas != null)
+            gestorMonedas.OnMonedasActualizadas -= ActualizarContadoresMonedas;
+    }
+
+    private void BuscarGestorMonedas()
+    {
+        if (ControlUnidades.instance == null)
+            return;
+
+        gestorMonedas = ControlUnidades.instance.gestorMonedas;
+
+        if (gestorMonedas != null)
+        {
+            gestorMonedas.OnMonedasActualizadas -= ActualizarContadoresMonedas;
+            gestorMonedas.OnMonedasActualizadas += ActualizarContadoresMonedas;
+        }
     }
 
     private void Update()
@@ -38,66 +77,113 @@ public class GameManager : MonoBehaviour
         {
             empezarAccionEnemiga = false;
 
-            ControlUnidades.instance.IniciarTurnoEnemigo();
+            if (ControlUnidades.instance != null)
+                ControlUnidades.instance.IniciarTurnoEnemigo();
         }
     }
 
-    private void LateUpdate() //para que se actualice en cada fotograma 
+    private void LateUpdate()
     {
-        //guardamos en control el control de unidades de la partida actual 
-        ControlUnidades control = ControlUnidades.instance;
+        if (gestorMonedas == null)
+            BuscarGestorMonedas();
 
-        //si falta alguna referencia entonces salimos del metodo en ese fotograma para que no de problema
-        if (textoMonedas == null || control == null || control.gestorMonedas == null)
-            return;
-
-        //consultamos el saldo de monedas del equipo que está jugando ahora. si es el jugador dara true al metodo obtenermonedas, sino false
-        int saldo = control.gestorMonedas.ObtenerMonedas(turnoJugador);  //si es true en el metodo enseña jugador, si es falso la IA
-
-        if (turnoJugador)  //si estamos en el turno del jugador
-            textoMonedas.text = $"Tus monedas · {saldo}";  //enseñamos este texto
-        else  //sino, es el de la IA
-            textoMonedas.text = $"Monedas IA · {saldo}";  //enseñamos el texto con las monedas de la IA
+        ActualizarContadoresMonedas();
     }
 
-    public void CambiarTurno()
+    private void ActualizarContadoresMonedas()
     {
-        //gaurdamos la referencia de ControlUnidades donde estan las listas de las tropas y sus movimientos
-        ControlUnidades control = ControlUnidades.instance;
-
-        //si es el turno del jugador, control apunta al componente  bien y se puede seguir con un turno, entonces salimos y nos esperamos
-        if (turnoJugador && control != null && control.movimientoEnCurso)
+        if (gestorMonedas == null)
             return;
 
-        //mientras esos componente de control no estén sin referenciar, vacios
-        if (control != null && control.gestorMonedas != null)
+        int saldoJugador = gestorMonedas.ObtenerMonedas(true);
+        int saldoIA = gestorMonedas.ObtenerMonedas(false);
+
+        // Si hay dos textos asignados, mostramos ambos saldos.
+        if (textoMonedasJugador != null)
+            textoMonedasJugador.text = "Tus monedas: " + saldoJugador;
+
+        if (textoMonedasIA != null)
+            textoMonedasIA.text = "Monedas IA: " + saldoIA;
+
+        // Compatibilidad con la interfaz antigua de un solo texto.
+        if (textoMonedas != null)
         {
-            if (turnoJugador)  //si es el turno del jugador llamamos a recompensar para que se haga el metodo
-                control.gestorMonedas.RecompensarTropasQuietas(control.tropasJugador, true);
-            else  //lo mismo cuando sea el turno de la IA, el false es porque no es el jugador (parametro del metodo)
-                control.gestorMonedas.RecompensarTropasQuietas(control.tropasEnemigas, false);
+            if (textoMonedasJugador == null &&
+                textoMonedasIA == null)
+            {
+                int saldoActual = turnoJugador
+                    ? saldoJugador
+                    : saldoIA;
+
+                textoMonedas.text = turnoJugador
+                    ? "Tus monedas: " + saldoActual
+                    : "Monedas IA: " + saldoActual;
+            }
+        }
+    }
+
+    
+    public void CambiarTurno()
+    {
+        ControlUnidades control = ControlUnidades.instance;
+
+        if (turnoJugador &&
+            control != null &&
+            control.movimientoEnCurso)
+        {
+            return;
+        }
+
+        // El jugador termina su turno:
+        // recompensamos Ãºnicamente a las tropas que no han realizado
+        // ninguna otra acciÃ³n durante este turno.
+        if (turnoJugador &&
+            control != null &&
+            gestorMonedas != null)
+        {
+            gestorMonedas.RecompensarTropasQuietas(
+                control.tropasJugador,
+                true
+            );
+
+            control.PrepararSiguienteTurnoJugador();
+        }
+
+        // La IA acaba de terminar su turno.
+        // Mantenemos exactamente su sistema de recompensa actual.
+        if (!turnoJugador &&
+            control != null &&
+            gestorMonedas != null)
+        {
+            gestorMonedas.RecompensarTropasQuietas(
+                control.tropasEnemigas,
+                false
+            );
         }
 
         turnoJugador = !turnoJugador;
 
         ActualizarInterfaz();
+        ActualizarContadoresMonedas();
 
-        if (!turnoJugador)
-        {
+        if (!turnoJugador && temporizador != null)
             temporizador.IniciarTemporizador();
-        }
 
-        if (btnEvolucionar != null)  //mientras el boton este asignado
-        {
-            btnEvolucionar.SetActive(turnoJugador);  //que solo aparezca en el turno del jugador 
-        }
+        if (btnEvolucionar != null)
+            btnEvolucionar.SetActive(turnoJugador);
     }
+
 
     private void ActualizarInterfaz()
     {
-        btnSigTurno.SetActive(turnoJugador);
-        textoPensando.SetActive(!turnoJugador);
-        textoMovRestantes.SetActive(turnoJugador);
+        if (btnSigTurno != null)
+            btnSigTurno.SetActive(turnoJugador);
+
+        if (textoPensando != null)
+            textoPensando.SetActive(!turnoJugador);
+
+        if (textoMovRestantes != null)
+            textoMovRestantes.SetActive(turnoJugador);
     }
 
     public bool TurnoJugador()

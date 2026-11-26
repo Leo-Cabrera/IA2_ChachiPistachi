@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,21 +9,27 @@ public class Approach : GAction
         base.goalSatisfied = false;
 
         return base.unidad != null &&
-               !agent.beliefs.HasState("puedeMoverse");
+               agent.beliefs.HasState("puedeMoverse");
     }
+
 
     public override bool PostPerform()
     {
         agent.RefreshBeliefs();
-        agent.beliefs.RemoveState("turnoIntacto"); //turno usado
+
+        agent.beliefs.RemoveState("turnoIntacto");
+
         return true;
     }
+
 
     public override void IniciateAction()
     {
         finished = false;
+
         StartCoroutine(ApproachCoroutine());
     }
+
 
     private IEnumerator ApproachCoroutine()
     {
@@ -35,7 +40,6 @@ public class Approach : GAction
             yield break;
         }
 
-        // NUEVO: si ya está junto a un enemigo, no necesita avanzar.
         if (EstaJuntoAEnemigo())
         {
             finished = true;
@@ -44,26 +48,29 @@ public class Approach : GAction
 
         if (base.unidad.puntosMovimientoRestantes <= 0)
         {
+            Debug.Log(
+                base.unidad.datosTropa.nombreTropa +
+                " no tiene movimiento disponible."
+            );
 
-
-            Debug.Log(base.unidad.datosTropa.nombreTropa + " se queda quieto.");
             finished = true;
             agent.RefreshBeliefs();
             yield break;
         }
-
 
         ControlUnidades control = ControlUnidades.instance;
 
         if (control == null || control.evaluador == null)
         {
-            Debug.LogError("No se ha encontrado ControlUnidades o EvaluadorTactico.");
+            Debug.LogError(
+                "No se ha encontrado ControlUnidades o EvaluadorTactico."
+            );
+
             finished = true;
             agent.RefreshBeliefs();
             yield break;
         }
 
-        // El evaluador elige el mejor destino alcanzable.
         List<HexTile> ruta = control.evaluador.ElegirRuta(
             base.unidad,
             control.tropasJugador
@@ -71,10 +78,11 @@ public class Approach : GAction
 
         if (ruta == null || ruta.Count <= 1)
         {
-            Debug.Log(base.unidad.datosTropa.nombreTropa +
-                      " no puede avanzar más este turno.");
+            Debug.Log(
+                base.unidad.datosTropa.nombreTropa +
+                " no puede avanzar más este turno."
+            );
 
-            // NUEVO: si no puede avanzar, termina su turno.
             base.unidad.puntosMovimientoRestantes = 0;
             base.unidad.yaSeHaMovido = true;
 
@@ -84,12 +92,21 @@ public class Approach : GAction
             yield break;
         }
 
-        // NUEVO: recorremos la ruta hasta agotar los puntos
-        // o alcanzar una posición vecina al enemigo.
         for (int i = 1; i < ruta.Count; i++)
         {
             if (base.unidad.puntosMovimientoRestantes <= 0)
                 break;
+
+            int coste = control.ObtenerCosteMovimiento(
+                base.unidad,
+                ruta[i]
+            );
+
+            if (coste == int.MaxValue ||
+                coste > base.unidad.puntosMovimientoRestantes)
+            {
+                break;
+            }
 
             control.movimientoEnCurso = true;
 
@@ -97,17 +114,12 @@ public class Approach : GAction
                 control.MoverUnidad(base.unidad, ruta[i])
             );
 
-            // Si ya hemos llegado junto al jugador, no seguimos avanzando.
             if (ActualizarPreparadoAtacar())
                 break;
         }
 
-
-        //base.unidad.puntosMovimientoRestantes -= ruta.Count; //por ahora resta puntos por casilla, cambiar segun terreno
         base.unidad.yaSeHaMovido = true;
 
-        // NUEVO: solo consideramos alcanzado el objetivo
-        // cuando realmente estamos junto a un jugador.
         ActualizarPreparadoAtacar();
 
         Debug.Log(
@@ -118,14 +130,17 @@ public class Approach : GAction
         finished = true;
     }
 
-    // NUEVO: comprueba si existe algún jugador en una casilla vecina.
+
     private bool EstaJuntoAEnemigo()
     {
         ControlUnidades control = ControlUnidades.instance;
 
-        if (control == null || control.grid == null ||
+        if (control == null ||
+            control.grid == null ||
             control.evaluador == null)
+        {
             return false;
+        }
 
         HexTile casillaActual = control.grid.ObtenerCasilla(
             base.unidad.coordenadaX,
@@ -151,22 +166,29 @@ public class Approach : GAction
 
         return false;
     }
+
+
     private bool ActualizarPreparadoAtacar()
     {
         bool estaJuntoAEnemigo = EstaJuntoAEnemigo();
-        if (estaJuntoAEnemigo) {
+
+        if (estaJuntoAEnemigo)
+        {
             agent.beliefs.SetState("preparadoAtacar", 1);
+
             base.goalSatisfied = true;
+
             agent.RefreshBeliefs();
+
             return true;
         }
-            
-        else
-        {
-            agent.beliefs.RemoveState("preparadoAtacar");
-            base.goalSatisfied = false;
-            agent.RefreshBeliefs();
-            return false;
-        }
+
+        agent.beliefs.RemoveState("preparadoAtacar");
+
+        base.goalSatisfied = false;
+
+        agent.RefreshBeliefs();
+
+        return false;
     }
 }

@@ -11,6 +11,7 @@ public class MapaInfluencia : MonoBehaviour
     [Header("Visualizacion")]
     public bool mostrarColores = true;
     public bool mostrarGizmos = true;
+    public bool mostrarMapaTension = false;
     Mesh hexagonoGizmo;
 
     [Header("Parametros de influencia")]
@@ -27,11 +28,14 @@ public class MapaInfluencia : MonoBehaviour
     // Influencia de total de cada casilla
     public Dictionary<HexTile, float> influenciaTotal = new Dictionary<HexTile, float>();
 
+    public Dictionary<HexTile, float> mapaTension = new Dictionary<HexTile, float>();
+
     public void CalcularMapaInfluencia()
     {
         influenciaAliada.Clear();
         influenciaEnemiga.Clear();
         influenciaTotal.Clear();
+        mapaTension.Clear();
 
         foreach (UnidadHex unidad in controlUnidades.tropasJugador)
             CalcularInfluenciaTropa(unidad, influenciaAliada);
@@ -49,6 +53,21 @@ public class MapaInfluencia : MonoBehaviour
 
             influenciaTotal[elemento.Key] -= elemento.Value;
         }
+
+        foreach (var elemento in influenciaAliada)
+            mapaTension[elemento.Key] = elemento.Value;
+
+        foreach (var elemento in influenciaEnemiga)
+        {
+            if (!mapaTension.ContainsKey(elemento.Key))
+                mapaTension[elemento.Key] = 0;
+
+            mapaTension[elemento.Key] += elemento.Value;
+        }
+
+        Debug.Log("Mapa de control y mapa de tensión actualizados.");
+        Debug.Log("Casillas con control: " + influenciaTotal.Count);
+        Debug.Log("Casillas con tensión: " + mapaTension.Count);    
     }
 
     void CalcularInfluenciaTropa(UnidadHex unidad, Dictionary<HexTile, float> mapaDestino)
@@ -87,7 +106,9 @@ public class MapaInfluencia : MonoBehaviour
         if (!mostrarGizmos || influenciaTotal == null || movimiento == null || movimiento.grid == null)
             return;
 
-        foreach (var elemento in influenciaTotal)
+        var mapaActual = mostrarMapaTension ? mapaTension : influenciaTotal;
+
+        foreach (var elemento in mapaActual)
         {
             HexTile casilla = elemento.Key;
             float influencia = elemento.Value;
@@ -101,12 +122,21 @@ public class MapaInfluencia : MonoBehaviour
 
                 float intensidad = Mathf.Clamp01(Mathf.Abs(influencia) / 3f);
 
-                if (influencia > 0)
-                    Gizmos.color = Color.Lerp(new Color(0.4f, 0.65f, 1f, 0.8f), new Color(0f, 0f, 0.35f, 0.95f), intensidad);
-                else if (influencia < 0)
-                    Gizmos.color = Color.Lerp(new Color(1f, 0.4f, 0.4f, 0.8f), new Color(0.5f, 0f, 0f, 0.95f), intensidad);
+                if (mostrarMapaTension)
+                {
+                    if (influencia <= 0) continue;
+
+                    Gizmos.color = Color.Lerp(new Color(1f, 0.85f, 0.2f, 0.8f), new Color(1f, 0f, 0f, 0.95f), intensidad);
+                }
                 else
-                    continue;
+                {
+                    if (influencia > 0)
+                        Gizmos.color = Color.Lerp(new Color(0.4f, 0.65f, 1f, 0.8f), new Color(0f, 0f, 0.35f, 0.95f), intensidad);
+                    else if (influencia < 0)
+                        Gizmos.color = Color.Lerp(new Color(1f, 0.4f, 0.4f, 0.8f), new Color(0.5f, 0f, 0f, 0.95f), intensidad);
+                    else
+                        continue;
+                }
 
                 Vector3 posicion = casilla.transform.position;
                 posicion.z -= 0.1f;
